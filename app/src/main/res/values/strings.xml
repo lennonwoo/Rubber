@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Rubber</string>
+    <string name="songs">Songs</string>
+    <string name="about">About</string>
+    <string name="nav_header_artist_test">Eagles</string>
+    <string name="nav_header_title_test">Hotel California</string>
+    <string name="nav_header_img_content_des">This is album\'s image</string>
+</resources>
