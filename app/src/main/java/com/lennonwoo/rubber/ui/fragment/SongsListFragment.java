@@ -1,4 +1,4 @@
-package com.lennonwoo.rubber;
+package com.lennonwoo.rubber.ui.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
+import com.lennonwoo.rubber.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

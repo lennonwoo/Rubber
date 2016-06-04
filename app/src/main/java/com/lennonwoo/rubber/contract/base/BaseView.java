@@ -1,4 +1,4 @@
-package com.lennonwoo.rubber;
+package com.lennonwoo.rubber.contract.base;
 
 /**
  * Created by lennon on 6/1/16.
