@@ -5,4 +5,7 @@
     <string name="nav_header_artist_test">Eagles</string>
     <string name="nav_header_title_test">Hotel California</string>
     <string name="nav_header_img_content_des">This is album\'s image</string>
+    <string name="empty_songs_list_hint">Ohhhh, You don\'t have songs\' record in your Android\'s MediaStore</string>
+    <string name="menu_filter">Filter</string>
+    <string name="sleep_time">Sleep time</string>
 </resources>

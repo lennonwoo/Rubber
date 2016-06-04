@@ -26,28 +26,11 @@
 
             <include layout="@layout/toolbar" />
 
-            <android.support.design.widget.CoordinatorLayout
-                android:id="@+id/coordinator_layout"
+            <FrameLayout
+                android:id="@+id/main_content_fragment"
                 android:layout_width="match_parent"
                 android:layout_weight="1"
-                android:layout_height="0dp">
-
-                <FrameLayout
-                    android:id="@+id/main_content_fragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/fab_shuffle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_margin="@dimen/fab_margin"
-                    android:src="@drawable/ic_add"
-                    app:layout_anchorGravity="bottom|end|right"
-                    app:layout_anchor="@id/main_content_fragment" />
-            </android.support.design.widget.CoordinatorLayout>
-
+                android:layout_height="0dp" />
         </LinearLayout>
 
         <FrameLayout
