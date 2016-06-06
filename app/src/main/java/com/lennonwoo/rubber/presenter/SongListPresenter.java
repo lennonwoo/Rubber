@@ -4,8 +4,10 @@ import android.util.Log;
 
 import com.lennonwoo.rubber.contract.MusicDataSourceContract;
 import com.lennonwoo.rubber.contract.SongListContract;
+import com.lennonwoo.rubber.data.model.local.Album;
 import com.lennonwoo.rubber.data.model.local.Song;
 
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -26,6 +28,9 @@ public class SongListPresenter implements SongListContract.Presenter {
 
     private CompositeSubscription mSubscriptions;
 
+    private List<Song> mSongs;
+    private List<Album> mAlbums;
+
     public SongListPresenter(SongListContract.View songListView, MusicDataSourceContract musicRepository) {
         mSongListView = songListView;
         mMusicRepository = musicRepository;
@@ -35,7 +40,8 @@ public class SongListPresenter implements SongListContract.Presenter {
 
     @Override
     public void subscribe() {
-        loadSongsList();
+        loadAlbumList();
+        loadSongList();
     }
 
     @Override
@@ -44,8 +50,7 @@ public class SongListPresenter implements SongListContract.Presenter {
     }
 
     @Override
-    public void loadSongsList() {
-        mSubscriptions.clear();
+    public void loadSongList() {
         Subscription subscription = mMusicRepository
                 .getSongList()
                 .flatMap(new Func1<List<Song>, Observable<Song>>() {
@@ -80,7 +85,59 @@ public class SongListPresenter implements SongListContract.Presenter {
                     @Override
                     public void onNext(List<Song> songs) {
                         Log.d(TAG, "onNext");
+                        long startTime = System.currentTimeMillis();
+                        for (Song song : songs) {
+                            for (Album album : mAlbums) {
+                                if (song.getAlbumId() == album.getAlbumId()) {
+                                    song.setArtPath(album.getArtPath());
+                                    break;
+                                }
+                            }
+                        }
+                        long endTiem = System.currentTimeMillis();
+                        Log.d(TAG, "passed time : " + (endTiem - startTime));
+                        Collections.shuffle(songs);
                         processSongs(songs);
+                    }
+                });
+        mSubscriptions.add(subscription);
+    }
+
+    @Override
+    public void loadAlbumList() {
+//        mSubscriptions.clear();
+        Subscription subscription = mMusicRepository
+                .getAlbumList()
+                .flatMap(new Func1<List<Album>, Observable<Album>>() {
+                    @Override
+                    public Observable<Album> call(List<Album> alba) {
+                        return Observable.from(alba);
+                    }
+                })
+                .filter(new Func1<Album, Boolean>() {
+                    @Override
+                    public Boolean call(Album album) {
+                        // There to choose different song/album/artist
+                        return true;
+                    }
+                })
+                .toList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<Album>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Album> alba) {
+                        mAlbums = alba;
                     }
                 });
         mSubscriptions.add(subscription);

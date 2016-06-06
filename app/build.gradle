@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.lennonwoo.rubber"
-        minSdkVersion 15
+        minSdkVersion 21
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -43,5 +43,8 @@ dependencies {
     // Rx
     compile 'io.reactivex:rxandroid:1.2.0'
     compile 'io.reactivex:rxjava:1.1.5'
+
+    // Picasso
+    compile 'com.squareup.picasso:picasso:2.5.2'
 
 }

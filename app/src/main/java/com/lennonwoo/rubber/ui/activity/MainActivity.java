@@ -1,6 +1,9 @@
 package com.lennonwoo.rubber.ui.activity;
 
+import android.Manifest;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,6 +18,7 @@ import com.lennonwoo.rubber.data.source.local.MusicLocalDataSource;
 import com.lennonwoo.rubber.data.source.remote.MusicRemoteDataSource;
 import com.lennonwoo.rubber.presenter.SongListPresenter;
 import com.lennonwoo.rubber.ui.fragment.SongListFragment;
+import com.lennonwoo.rubber.utils.PermissionChecker;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
 
+    PermissionChecker checker;
+
     SongListPresenter songListPresenter;
 
     @Override
@@ -33,7 +39,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        init();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checker = new PermissionChecker(this, drawerLayout);
+            checker.check(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                new PermissionChecker.OnPermissionResponse() {
+                    @Override
+                    public void onAccepted() {
+                        init();
+                    }
+
+                    @Override
+                    public void onDecline() {
+                        finish();
+                    }
+                });
+        } else {
+            init();
+        }
     }
 
     private void init() {
@@ -78,5 +100,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.tasks_fragment_menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        checker.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

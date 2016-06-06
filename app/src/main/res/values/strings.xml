@@ -9,4 +9,5 @@
     <string name="menu_filter">Filter</string>
     <string name="sleep_time">Sleep time</string>
     <string name="img_song_art_content_des">This is song\'s art</string>
+    <string name="ok">OK</string>
 </resources>

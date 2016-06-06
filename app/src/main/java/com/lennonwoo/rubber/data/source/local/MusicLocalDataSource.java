@@ -5,19 +5,17 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 
 import com.lennonwoo.rubber.contract.MusicDataSourceContract;
+import com.lennonwoo.rubber.data.model.local.Album;
 import com.lennonwoo.rubber.data.model.local.Song;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 public class MusicLocalDataSource implements MusicDataSourceContract.LocalDataSource{
 
     private static MusicLocalDataSource INSTANCE;
-
-    private Func1<Cursor, Song> mSongMapperFunction;
 
     Context context;
 
@@ -50,6 +48,22 @@ public class MusicLocalDataSource implements MusicDataSourceContract.LocalDataSo
         return Observable.from(songs).toList();
     }
 
+    @Override
+    public Observable<List<Album>> getAlbumList() {
+        Cursor cursor = context.getContentResolver()
+                .query(MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, null, null, null, null);
+        List<Album> albums = new ArrayList<>();
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    albums.add(getAlbumFromCursor(cursor));
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        return Observable.from(albums).toList();
+    }
+
     private Song getSongFromCursor(Cursor cursor) {
         long _id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
         long artist_id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
@@ -65,6 +79,16 @@ public class MusicLocalDataSource implements MusicDataSourceContract.LocalDataSo
                         title, artist, album,
                         _size, duration, data_added,
                         _data);
+    }
+
+    private Album getAlbumFromCursor(Cursor cursor) {
+        long _id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Albums._ID));
+        long numSongs = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Albums.NUMBER_OF_SONGS));
+        String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM));
+        String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST));
+        String album_art = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
+        return new Album(_id, numSongs,
+                album, artist, album_art);
     }
 
 }

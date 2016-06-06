@@ -107,4 +107,12 @@ public class Song {
     public void setPath(String path) {
         this.path = path;
     }
+
+    public String getArtPath() {
+        return artPath;
+    }
+
+    public void setArtPath(String artPath) {
+        this.artPath = artPath;
+    }
 }

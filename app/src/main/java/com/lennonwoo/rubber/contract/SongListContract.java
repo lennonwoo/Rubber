@@ -18,7 +18,9 @@ public interface SongListContract {
 
     interface Presenter extends BasePresenter {
 
-        void loadSongsList();
+        void loadSongList();
+
+        void loadAlbumList();
     }
 
 }

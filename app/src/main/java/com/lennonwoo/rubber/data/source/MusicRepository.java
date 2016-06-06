@@ -1,6 +1,7 @@
 package com.lennonwoo.rubber.data.source;
 
 import com.lennonwoo.rubber.contract.MusicDataSourceContract;
+import com.lennonwoo.rubber.data.model.local.Album;
 import com.lennonwoo.rubber.data.model.local.Song;
 
 import java.util.List;
@@ -32,6 +33,11 @@ public class MusicRepository implements MusicDataSourceContract{
     @Override
     public Observable<List<Song>> getSongList() {
         return mLocalDataSource.getSongList();
+    }
+
+    @Override
+    public Observable<List<Album>> getAlbumList() {
+        return mLocalDataSource.getAlbumList();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.lennonwoo.rubber.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,11 @@ import android.widget.TextView;
 
 import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.data.model.local.Song;
+import com.lennonwoo.rubber.utils.BitmapHelper;
+import com.lennonwoo.rubber.utils.RoundedTransformation;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +44,15 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
     public void onBindViewHolder(SongViewHolder holder, int position) {
         holder.songName.setText(songList.get(position).getName());
         holder.songArtist.setText(songList.get(position).getArtist());
+        String path;
+        if ((path = songList.get(position).getArtPath()) != null) {
+            Picasso.with(context)
+                    .load(new File(path))
+                    .resize(80, 80)
+                    .centerCrop()
+                    .transform(new RoundedTransformation(40))
+                    .into(holder.songArt);
+        }
     }
 
     @Override
@@ -65,6 +79,10 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
         public SongViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            Bitmap bitmap = BitmapHelper.getBitmapOfVector(
+                    context.getDrawable(R.drawable.default_art), 80, 80);
+            Bitmap bitmapConverted = BitmapHelper.getRoundedCornerBitmap(bitmap, 40);
+            songArt.setImageBitmap(bitmapConverted);
         }
     }
 
