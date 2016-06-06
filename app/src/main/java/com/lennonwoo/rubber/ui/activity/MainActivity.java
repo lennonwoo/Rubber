@@ -10,21 +10,23 @@ import android.view.Menu;
 import android.view.View;
 
 import com.lennonwoo.rubber.R;
-import com.lennonwoo.rubber.ui.fragment.SongsListFragment;
+import com.lennonwoo.rubber.data.source.MusicRepository;
+import com.lennonwoo.rubber.data.source.local.MusicLocalDataSource;
+import com.lennonwoo.rubber.data.source.remote.MusicRemoteDataSource;
+import com.lennonwoo.rubber.presenter.SongListPresenter;
+import com.lennonwoo.rubber.ui.fragment.SongListFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by lennon on 6/1/16.
- */
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+
+    SongListPresenter songListPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,9 +63,14 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.addDrawerListener(drawerToggle);
         }
 
+        SongListFragment songListFragment = new SongListFragment();
+        MusicRepository musicRepository = MusicRepository.getInstance(
+                MusicLocalDataSource.getInstance(this), MusicRemoteDataSource.getInstace(this));
+        songListPresenter = new SongListPresenter(songListFragment, musicRepository);
+
         getFragmentManager()
                 .beginTransaction()
-                .replace(R.id.main_content_fragment, new SongsListFragment())
+                .replace(R.id.main_content_fragment, songListFragment)
                 .commit();
     }
 

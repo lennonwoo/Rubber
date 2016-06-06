@@ -8,4 +8,5 @@
     <string name="empty_songs_list_hint">Ohhhh, You don\'t have songs\' record in your Android\'s MediaStore</string>
     <string name="menu_filter">Filter</string>
     <string name="sleep_time">Sleep time</string>
+    <string name="img_song_art_content_des">This is song\'s art</string>
 </resources>
