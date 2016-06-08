@@ -33,7 +33,7 @@
             android:layout_centerInParent="true"
             android:src="@drawable/default_art" />
 
-        <com.lennonwoo.rubber.ui.view.CircleProgressView
+        <com.lennonwoo.rubber.ui.widget.CircleProgressView
             android:id="@+id/circle_progress"
             android:layout_width="300dp"
             android:layout_height="300dp"

@@ -1,4 +1,4 @@
-package com.lennonwoo.rubber.ui.view;
+package com.lennonwoo.rubber.ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;

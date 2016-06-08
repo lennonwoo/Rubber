@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.contract.PlayerContract;
-import com.lennonwoo.rubber.ui.view.CircleProgressView;
+import com.lennonwoo.rubber.ui.widget.CircleProgressView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -8,7 +8,9 @@ import com.lennonwoo.rubber.data.model.local.Album;
 import com.lennonwoo.rubber.data.model.local.Song;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 import rx.Observer;
@@ -29,8 +31,7 @@ public class SongListPresenter implements SongListContract.Presenter {
     private CompositeSubscription mSubscriptions;
 
     private List<Song> mSongs;
-    //TODO change List<Album> to Map<int, String>
-    private List<Album> mAlbums;
+    private Map<Long, String> albumArtMap;
 
     public SongListPresenter(SongListContract.View songListView, MusicDataSourceContract musicRepository) {
         view = songListView;
@@ -41,6 +42,7 @@ public class SongListPresenter implements SongListContract.Presenter {
 
     @Override
     public void subscribe() {
+        init();
         loadAlbumList();
         loadSongList();
     }
@@ -88,12 +90,7 @@ public class SongListPresenter implements SongListContract.Presenter {
                         Log.d(TAG, "onNext");
                         long startTime = System.currentTimeMillis();
                         for (Song song : songs) {
-                            for (Album album : mAlbums) {
-                                if (song.getAlbumId() == album.getAlbumId()) {
-                                    song.setArtPath(album.getArtPath());
-                                    break;
-                                }
-                            }
+                            song.setArtPath(albumArtMap.get(song.getAlbumId()));
                         }
                         long endTiem = System.currentTimeMillis();
                         Log.d(TAG, "passed time : " + (endTiem - startTime));
@@ -138,10 +135,16 @@ public class SongListPresenter implements SongListContract.Presenter {
 
                     @Override
                     public void onNext(List<Album> alba) {
-                        mAlbums = alba;
+                        for (Album album : alba) {
+                            albumArtMap.put(album.getAlbumId(), album.getArtPath());
+                        }
                     }
                 });
         mSubscriptions.add(subscription);
+    }
+
+    private void init() {
+        albumArtMap = new HashMap<>();
     }
 
     private void processSongs(List<Song> songs) {
