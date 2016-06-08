@@ -22,20 +22,21 @@ public class SongListPresenter implements SongListContract.Presenter {
 
     public static final String TAG = SongListPresenter.class.getSimpleName();
 
-    private SongListContract.View mSongListView;
+    private SongListContract.View view;
 
     private MusicDataSourceContract mMusicRepository;
 
     private CompositeSubscription mSubscriptions;
 
     private List<Song> mSongs;
+    //TODO change List<Album> to Map<int, String>
     private List<Album> mAlbums;
 
     public SongListPresenter(SongListContract.View songListView, MusicDataSourceContract musicRepository) {
-        mSongListView = songListView;
+        view = songListView;
         mMusicRepository = musicRepository;
         mSubscriptions = new CompositeSubscription();
-        mSongListView.setPresenter(this);
+        view.setPresenter(this);
     }
 
     @Override
@@ -145,9 +146,9 @@ public class SongListPresenter implements SongListContract.Presenter {
 
     private void processSongs(List<Song> songs) {
         if (songs.size() == 0) {
-            mSongListView.showEmptyLayout();
+            view.showEmptyLayout();
         } else {
-            mSongListView.setRecyclerItems(songs);
+            view.setRecyclerItems(songs);
         }
     }
 }

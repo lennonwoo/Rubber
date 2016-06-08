@@ -43,7 +43,7 @@ public class SongListFragment extends Fragment implements SongListContract.View 
         Log.d(TAG, "fab shuffle clicked");
     }
 
-    private SongListContract.Presenter mSongListPresenter;
+    private SongListContract.Presenter presenter;
     private SongListAdapter adapter;
 
     @Nullable
@@ -58,13 +58,13 @@ public class SongListFragment extends Fragment implements SongListContract.View 
     @Override
     public void onResume() {
         super.onResume();
-        mSongListPresenter.subscribe();
+        presenter.subscribe();
     }
 
     @Override
     public void onPause() {
         super.onDestroyView();
-        mSongListPresenter.unsubscribe();
+        presenter.unsubscribe();
     }
 
     private void init() {
@@ -77,7 +77,7 @@ public class SongListFragment extends Fragment implements SongListContract.View 
 
     @Override
     public void setPresenter(SongListContract.Presenter presenter) {
-        mSongListPresenter = presenter;
+        this.presenter = presenter;
     }
 
     public void showEmptyLayout() {

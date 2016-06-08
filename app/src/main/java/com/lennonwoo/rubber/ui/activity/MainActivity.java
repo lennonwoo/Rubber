@@ -16,9 +16,12 @@ import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.data.source.MusicRepository;
 import com.lennonwoo.rubber.data.source.local.MusicLocalDataSource;
 import com.lennonwoo.rubber.data.source.remote.MusicRemoteDataSource;
+import com.lennonwoo.rubber.presenter.PlayerPresenter;
 import com.lennonwoo.rubber.presenter.SongListPresenter;
+import com.lennonwoo.rubber.ui.fragment.PlayerFragment;
 import com.lennonwoo.rubber.ui.fragment.SongListFragment;
 import com.lennonwoo.rubber.utils.PermissionChecker;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,10 +32,13 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+    @BindView(R.id.sliding_up_pane_layout)
+    SlidingUpPanelLayout slidingUpPanelLayout;
 
     PermissionChecker checker;
 
     SongListPresenter songListPresenter;
+    PlayerPresenter playerPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,14 +92,23 @@ public class MainActivity extends AppCompatActivity {
         }
 
         SongListFragment songListFragment = new SongListFragment();
+        PlayerFragment playerFragment = new PlayerFragment();
         MusicRepository musicRepository = MusicRepository.getInstance(
                 MusicLocalDataSource.getInstance(this), MusicRemoteDataSource.getInstace(this));
         songListPresenter = new SongListPresenter(songListFragment, musicRepository);
+        playerPresenter = new PlayerPresenter(playerFragment, musicRepository);
 
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.main_content_fragment, songListFragment)
                 .commit();
+
+        getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_content_panel, playerFragment)
+                .commit();
+
+        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
     }
 
     @Override

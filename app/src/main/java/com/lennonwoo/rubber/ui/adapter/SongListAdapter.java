@@ -14,6 +14,7 @@ import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.data.model.local.Song;
 import com.lennonwoo.rubber.utils.BitmapHelper;
 import com.lennonwoo.rubber.utils.RoundedTransformation;
+import com.lennonwoo.rubber.utils.Utils;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -42,8 +43,12 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
 
     @Override
     public void onBindViewHolder(SongViewHolder holder, int position) {
+        int duration = songList.get(position).getDuration();
+        int sumSecond = duration % 1000;
         holder.songName.setText(songList.get(position).getName());
         holder.songArtist.setText(songList.get(position).getArtist());
+        //TODO time error
+        holder.songTime.setText(Utils.durationToString(sumSecond));
         String path;
         if ((path = songList.get(position).getArtPath()) != null) {
             Picasso.with(context)
@@ -75,6 +80,8 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
         TextView songName;
         @BindView(R.id.song_artist)
         TextView songArtist;
+        @BindView(R.id.song_time)
+        TextView songTime;
 
         public SongViewHolder(View itemView) {
             super(itemView);

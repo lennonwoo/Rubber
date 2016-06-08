@@ -7,13 +7,15 @@ public class Song {
     String name, artist, album;
 
     // song's information
-    long size, duration, dataAdded;
+    long size, dataAdded;
+
+    int duration;
 
     String path, artPath;
 
     public Song(long _id, long artist_id, long album_id,
                 String title, String artist, String album,
-                long _size, long duration, long date_added,
+                long _size, int duration, long date_added,
                 String _data) {
         songId = _id;
         artistId = artist_id;
@@ -84,11 +86,11 @@ public class Song {
         this.size = size;
     }
 
-    public long getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(long duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 

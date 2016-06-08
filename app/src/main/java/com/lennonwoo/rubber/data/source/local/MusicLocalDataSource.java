@@ -72,7 +72,7 @@ public class MusicLocalDataSource implements MusicDataSourceContract.LocalDataSo
         String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
         String album = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
         long _size = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.SIZE));
-        long duration = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+        int duration = cursor.getInt(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
         long data_added = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED));
         String _data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
         return new Song(_id, artist_id, album_id,
