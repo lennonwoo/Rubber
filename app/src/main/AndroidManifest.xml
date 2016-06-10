@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.MusicPlayService" />
+        <service android:name=".service.PlayerService" />
 
     </application>
 

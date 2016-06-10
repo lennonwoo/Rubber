@@ -12,8 +12,8 @@
 
         <ImageView
             android:id="@+id/blur_img"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="400dp"
+            android:layout_height="400dp"
             android:src="@drawable/default_art" />
 
         <TextView
@@ -50,7 +50,7 @@
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/playing_queue"
+            android:id="@+id/playlist"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         </android.support.v7.widget.RecyclerView>
@@ -63,7 +63,7 @@
             android:layout_margin="@dimen/fab_margin"
             android:src="@drawable/ic_add"
             app:layout_anchorGravity="bottom|end|right"
-            app:layout_anchor="@id/playing_queue" />
+            app:layout_anchor="@id/playlist" />
      </android.support.design.widget.CoordinatorLayout>
 
 </LinearLayout>

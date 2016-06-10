@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-public class MusicPlayService extends Service {
+public class PlayerService extends Service {
 
     public static final String ACTION_PLAY_SHUFFLE = "Play shuffle";
     public static final String ACTION_PLAY_ALL = "play all";

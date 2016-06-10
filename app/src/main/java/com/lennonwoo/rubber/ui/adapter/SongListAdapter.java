@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.data.model.local.Song;
-import com.lennonwoo.rubber.service.MusicPlayService;
+import com.lennonwoo.rubber.service.PlayerService;
 import com.lennonwoo.rubber.utils.BitmapHelper;
 import com.lennonwoo.rubber.utils.RoundedTransformation;
 import com.lennonwoo.rubber.utils.Utils;
@@ -63,7 +63,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.setAction(MusicPlayService.ACTION_PLAY_ALL);
+                intent.setAction(PlayerService.ACTION_PLAY_ALL);
             }
         });
     }

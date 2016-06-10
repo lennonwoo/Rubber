@@ -2,10 +2,12 @@ package com.lennonwoo.rubber.data.source.local;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.provider.MediaStore;
 
 import com.lennonwoo.rubber.contract.MusicDataSourceContract;
 import com.lennonwoo.rubber.data.model.local.Album;
+import com.lennonwoo.rubber.data.model.local.Fav;
 import com.lennonwoo.rubber.data.model.local.Song;
 
 import java.util.ArrayList;
@@ -19,9 +21,11 @@ public class MusicLocalDataSource implements MusicDataSourceContract.LocalDataSo
 
     Context context;
 
+    MusicDbHelper dbHelper;
+
     private MusicLocalDataSource(Context context) {
         this.context = context;
-        MusicDbHelper dbHelper = new MusicDbHelper(context);
+        dbHelper = new MusicDbHelper(context);
     }
 
     public static MusicLocalDataSource getInstance(Context context) {
@@ -64,6 +68,23 @@ public class MusicLocalDataSource implements MusicDataSourceContract.LocalDataSo
         return Observable.from(albums).toList();
     }
 
+    @Override
+    public Observable<List<Fav>> getFavList() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(MusicDbPersistenceContract.FavDb.TABLE_NAME,
+                null, null, null, null, null, null);
+        List<Fav> favList = new ArrayList<>();
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    favList.add(getFavFromCursor(cursor));
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        return Observable.from(favList).toList();
+    }
+
     private Song getSongFromCursor(Cursor cursor) {
         long _id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
         long artist_id = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID));
@@ -89,6 +110,11 @@ public class MusicLocalDataSource implements MusicDataSourceContract.LocalDataSo
         String album_art = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART));
         return new Album(_id, numSongs,
                 album, artist, album_art);
+    }
+
+    private Fav getFavFromCursor(Cursor cursor) {
+        long song_id = cursor.getLong(cursor.getColumnIndex(MusicDbPersistenceContract.FavDb.COLUMN_NAME_SONG_ID));
+        return new Fav(song_id);
     }
 
 }

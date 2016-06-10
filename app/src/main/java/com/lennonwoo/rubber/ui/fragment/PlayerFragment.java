@@ -14,7 +14,14 @@ import android.widget.TextView;
 
 import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.contract.PlayerContract;
+import com.lennonwoo.rubber.data.model.local.Song;
 import com.lennonwoo.rubber.ui.widget.CircleProgressView;
+import com.lennonwoo.rubber.utils.BlurTransformation;
+import com.lennonwoo.rubber.utils.RoundedTransformation;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,8 +46,8 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     ImageView roundedImg;
     @BindView(R.id.circle_progress)
     CircleProgressView circleProgress;
-    @BindView(R.id.playing_queue)
-    RecyclerView playingQueue;
+    @BindView(R.id.playlist)
+    RecyclerView playlist;
     @BindView(R.id.fab_more)
     FloatingActionButton fabMore;
 
@@ -52,6 +59,18 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         ButterKnife.bind(this, view);
         init();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.subscribe();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        presenter.unsubscribe();
     }
 
     @Override
@@ -67,6 +86,25 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     @Override
     public void changeProgress(int progress) {
 
+    }
+
+    @Override
+    public void setRecyclerItems(List<Song> playlist) {
+        //TODO
+    }
+
+    @Override
+    public void setPlayingSongInfo(Song currentSong) {
+        Picasso.with(context)
+                .load(new File(currentSong.getArtPath()))
+                .resize(250, 250)
+                .centerCrop()
+                .transform(new RoundedTransformation(125))
+                .into(roundedImg);
+        Picasso.with(context)
+                .load(new File(currentSong.getArtPath()))
+                .transform(new BlurTransformation(context))
+                .into(blurImg);
     }
 
     private void init() {

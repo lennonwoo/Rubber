@@ -13,6 +13,8 @@ public class Song {
 
     String path, artPath;
 
+    boolean fav;
+
     public Song(long _id, long artist_id, long album_id,
                 String title, String artist, String album,
                 long _size, int duration, long date_added,
@@ -28,6 +30,7 @@ public class Song {
         dataAdded = date_added;
         path = _data;
         artPath = null;
+        fav = false;
     }
 
     public long getSongId() {
@@ -116,5 +119,13 @@ public class Song {
 
     public void setArtPath(String artPath) {
         this.artPath = artPath;
+    }
+
+    public boolean isFav() {
+        return fav;
+    }
+
+    public void setFav(boolean fav) {
+        this.fav = fav;
     }
 }
