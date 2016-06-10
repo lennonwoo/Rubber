@@ -10,7 +10,7 @@ import rx.Observable;
 
 public interface MusicDataSourceContract {
 
-    public enum PlaylistType {
+    enum PlaylistType {
         ALL,
         FAV
     }

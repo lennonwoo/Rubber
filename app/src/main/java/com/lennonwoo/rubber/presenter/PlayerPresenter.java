@@ -5,6 +5,7 @@ import com.lennonwoo.rubber.contract.PlayerContract;
 import com.lennonwoo.rubber.data.model.local.Song;
 
 import java.util.List;
+import java.util.Random;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -24,6 +25,9 @@ public class PlayerPresenter implements PlayerContract.Presenter {
 
     private int playingSongIndex;
 
+    private PlayerContract.PlayType playType;
+
+    private Random rand;
 
     public PlayerPresenter(PlayerContract.View playerView, MusicDataSourceContract musicRepository) {
         view = playerView;
@@ -35,6 +39,7 @@ public class PlayerPresenter implements PlayerContract.Presenter {
     @Override
     public void subscribe() {
         playingSongIndex = 0;
+        rand = new Random();
         mMusicRepository.refreshRepository();
         loadAllPlaylist(0);
     }
@@ -91,20 +96,48 @@ public class PlayerPresenter implements PlayerContract.Presenter {
 
     @Override
     public Song getPrevSong() {
-        playingSongIndex--;
-        if (playingSongIndex < 0) {
-            playingSongIndex = currentSongList.size() - 1;
+        switch (playType) {
+            case SHUFFLE:
+                playingSongIndex = rand.nextInt(currentSongList.size());
+                break;
+            case REPEAT_SINGLE:
+                break;
+            case REPEAT_ALL:
+                playingSongIndex--;
+                if (playingSongIndex < 0) {
+                    playingSongIndex = currentSongList.size() - 1;
+                }
+                break;
         }
         return getCurrentPlayingSong();
     }
 
     @Override
     public Song getNextSong() {
-        playingSongIndex++;
-        if (playingSongIndex >= currentSongList.size()) {
-            playingSongIndex = 0;
+        switch (playType) {
+            case SHUFFLE:
+                playingSongIndex = rand.nextInt(currentSongList.size());
+                break;
+            case REPEAT_SINGLE:
+                break;
+            case REPEAT_ALL:
+                playingSongIndex++;
+                if (playingSongIndex >= currentSongList.size()) {
+                    playingSongIndex = 0;
+                }
+                break;
         }
         return getCurrentPlayingSong();
+    }
+
+    @Override
+    public void setPlayType(PlayerContract.PlayType playType) {
+        this.playType = playType;
+    }
+
+    @Override
+    public PlayerContract.PlayType getPlayType() {
+        return playType;
     }
 
     private void updatePlaylist(List<Song> songs, long songId) {

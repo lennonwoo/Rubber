@@ -19,14 +19,15 @@ import java.io.IOException;
 
 public class PlayerService extends Service {
 
-//    public static final String ACTION_PLAY_SHUFFLE = "Play shuffle";
-//    public static final String ACTION_PLAY_ALL = "play all";
-//    public static final String ACTION_PLAY_SINGLE = "Play singe";
+    public static final String ACTION_PLAY_ALL = "com.lennonwoo.playall";
+    public static final String ACTION_PLAY_FAV = "com.lennonwoo.playfav";
     public static final String ACTION_NEXT_SONG = "com.lennonwoo.nextSong";
     public static final String ACTION_PREV_SONG = "com.lennonwoo.previousSong";
     public static final String ACTION_CHANGE_SONG = "com.lennonwoo.changeSong";
     public static final String ACTION_RESUME = "com.lennonwoo.resume";
     public static final String ACTION_PAUSE = "com.lennonwoo.pause";
+
+    public static final String SONG_ID = "songId";
 
     //This is used to bind presenter
     private MyBinder mBinder = new MyBinder();
@@ -40,9 +41,15 @@ public class PlayerService extends Service {
         public void onReceive(Context context, Intent intent) {
                 try {
                     switch (intent.getAction()) {
+                        case ACTION_PLAY_ALL:
+                            long songId = intent.getLongExtra(SONG_ID, 0);
+                            presenter.loadAllPlaylist(songId);
+                            Song songCurrent1 = presenter.getCurrentPlayingSong();
+                            changeSong(songCurrent1);
+                            break;
                         case ACTION_CHANGE_SONG:
-                            Song songCurrent = presenter.getCurrentPlayingSong();
-                            changeSong(songCurrent);
+                            Song songCurrent2 = presenter.getCurrentPlayingSong();
+                            changeSong(songCurrent2);
                             break;
                         case ACTION_NEXT_SONG:
                             Song songNext = presenter.getNextSong();
@@ -58,9 +65,8 @@ public class PlayerService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         IntentFilter filter = new IntentFilter();
-//        filter.addAction(ACTION_PLAY_SHUFFLE);
-//        filter.addAction(ACTION_PLAY_ALL);
-//        filter.addAction(ACTION_PLAY_SINGLE);
+        filter.addAction(ACTION_PLAY_ALL);
+        filter.addAction(ACTION_PLAY_FAV);
         filter.addAction(ACTION_NEXT_SONG);
         filter.addAction(ACTION_PREV_SONG);
         filter.addAction(ACTION_CHANGE_SONG);

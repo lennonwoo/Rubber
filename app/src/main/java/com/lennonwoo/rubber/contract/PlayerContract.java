@@ -8,6 +8,10 @@ import java.util.List;
 
 public interface PlayerContract {
 
+    enum PlayType {
+        SHUFFLE, REPEAT_SINGLE, REPEAT_ALL
+    }
+
     interface View extends BaseView<Presenter> {
 
         void setPlayingSongInfo(Song currentSong);
@@ -29,6 +33,10 @@ public interface PlayerContract {
         Song getPrevSong();
 
         Song getNextSong();
+
+        void setPlayType(PlayType playType);
+
+        PlayType getPlayType();
 
     }
 

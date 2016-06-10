@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -33,13 +34,14 @@ import butterknife.OnClick;
 
 public class PlayerFragment extends Fragment implements PlayerContract.View, CircleProgressView.SongOperation {
 
-    public static final String ACTION_PLAY_ALL = "com.lennonwoo.playall";
-
-    public static final String ACTION_PLAY_FAV = "com.lennonwoo.playfav";
-
     public static final String ACTION_UPDATE_FRAGMENT = "com.lennon.updateFragment";
 
-    public static final String SONG_ID = "songId";
+    //preference static string
+    private static final String MUSIC_PREFERENCE = "music_preference";
+    private static final String PLAY_TYPE = "playType";
+    private static final String SHUFFLE = "shuffle";
+    private static final String REPEAT_SINGLE = "repeat single";
+    private static final String REPEAT_ALL = "repeat all";
 
     private Context context;
 
@@ -49,13 +51,6 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         @Override
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
-                case ACTION_PLAY_ALL:
-                    long songId = intent.getLongExtra(SONG_ID, 0);
-                    presenter.loadAllPlaylist(songId);
-                    Intent intent1 = new Intent();
-                    intent.setAction(PlayerService.ACTION_CHANGE_SONG);
-                    context.sendBroadcast(intent);
-                    break;
                 case ACTION_UPDATE_FRAGMENT:
                     presenter.refreshView();
             }
@@ -100,14 +95,25 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     @Override
     public void onStart() {
         super.onStart();
+        SharedPreferences preferences = context.getSharedPreferences(MUSIC_PREFERENCE, Context.MODE_PRIVATE);
+        String playType = preferences.getString(PLAY_TYPE, SHUFFLE);
+        switch (playType) {
+            case SHUFFLE:
+                presenter.setPlayType(PlayerContract.PlayType.SHUFFLE);
+                break;
+            case REPEAT_SINGLE:
+                presenter.setPlayType(PlayerContract.PlayType.REPEAT_SINGLE);
+                break;
+            case REPEAT_ALL:
+                presenter.setPlayType(PlayerContract.PlayType.REPEAT_ALL);
+                break;
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION_PLAY_ALL);
-        filter.addAction(ACTION_PLAY_FAV);
         filter.addAction(ACTION_UPDATE_FRAGMENT);
         context.registerReceiver(br, filter);
         presenter.subscribe();
@@ -120,7 +126,28 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         presenter.unsubscribe();
     }
 
-
+    @Override
+    public void onStop() {
+        super.onStop();
+        PlayerContract.PlayType playType = presenter.getPlayType();
+        SharedPreferences.Editor editor =
+                context.getSharedPreferences(MUSIC_PREFERENCE, Context.MODE_PRIVATE).edit();
+        switch (playType) {
+            case SHUFFLE:
+                editor.putString(PLAY_TYPE, SHUFFLE);
+                break;
+            case REPEAT_SINGLE:
+                editor.putString(PLAY_TYPE, REPEAT_SINGLE);
+                break;
+            case REPEAT_ALL:
+                editor.putString(PLAY_TYPE, REPEAT_ALL);
+                break;
+            default:
+                editor.putString(PLAY_TYPE, SHUFFLE);
+                break;
+        }
+        editor.apply();
+    }
 
     @Override
     public void setPresenter(PlayerContract.Presenter presenter) {
