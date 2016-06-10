@@ -18,9 +18,13 @@ public interface PlayerContract {
 
     interface Presenter extends BasePresenter {
 
-        void loadFavPlaylist();
+        void loadFavPlaylist(long songId);
 
-        void loadAllPlaylist();
+        void loadAllPlaylist(long songId);
+
+        Song getCurrentPlayingSong();
+
+        Song getNextSong();
 
     }
 

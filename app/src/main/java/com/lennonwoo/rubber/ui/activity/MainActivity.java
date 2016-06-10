@@ -1,8 +1,12 @@
 package com.lennonwoo.rubber.ui.activity;
 
 import android.Manifest;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
@@ -18,6 +22,7 @@ import com.lennonwoo.rubber.data.source.local.MusicLocalDataSource;
 import com.lennonwoo.rubber.data.source.remote.MusicRemoteDataSource;
 import com.lennonwoo.rubber.presenter.PlayerPresenter;
 import com.lennonwoo.rubber.presenter.SongListPresenter;
+import com.lennonwoo.rubber.service.PlayerService;
 import com.lennonwoo.rubber.ui.fragment.PlayerFragment;
 import com.lennonwoo.rubber.ui.fragment.SongListFragment;
 import com.lennonwoo.rubber.utils.PermissionChecker;
@@ -64,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
     private void init() {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -91,12 +101,25 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.addDrawerListener(drawerToggle);
         }
 
+
         SongListFragment songListFragment = new SongListFragment();
         PlayerFragment playerFragment = new PlayerFragment();
         MusicRepository musicRepository = MusicRepository.getInstance(
                 MusicLocalDataSource.getInstance(this), MusicRemoteDataSource.getInstace(this));
         songListPresenter = new SongListPresenter(songListFragment, musicRepository);
         playerPresenter = new PlayerPresenter(playerFragment, musicRepository);
+
+        bindService(new Intent(this, PlayerService.class), new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                PlayerService.MyBinder binder = (PlayerService.MyBinder) service;
+                binder.setPresenter(playerPresenter);
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+            }
+        }, BIND_AUTO_CREATE);
 
         getFragmentManager()
                 .beginTransaction()

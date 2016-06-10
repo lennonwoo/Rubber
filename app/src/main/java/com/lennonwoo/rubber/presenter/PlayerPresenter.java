@@ -36,7 +36,7 @@ public class PlayerPresenter implements PlayerContract.Presenter {
     public void subscribe() {
         playingSongIndex = 0;
         mMusicRepository.refreshRepository();
-        loadAllPlaylist();
+        loadAllPlaylist(0);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class PlayerPresenter implements PlayerContract.Presenter {
     }
 
     @Override
-    public void loadFavPlaylist() {
+    public void loadFavPlaylist(final long songId) {
         mSubscriptions.clear();
         Subscription subscription =
                 mMusicRepository.getPlaylist(MusicDataSourceContract.PlaylistType.FAV)
@@ -54,7 +54,7 @@ public class PlayerPresenter implements PlayerContract.Presenter {
                 .subscribe(new Action1<List<Song>>() {
                     @Override
                     public void call(List<Song> songs) {
-                        currentSongList = songs;
+                        updatePlaylist(songs, songId);
                         refreshView();
                     }
                 });
@@ -62,7 +62,7 @@ public class PlayerPresenter implements PlayerContract.Presenter {
     }
 
     @Override
-    public void loadAllPlaylist() {
+    public void loadAllPlaylist(final long songId) {
         mSubscriptions.clear();
         Subscription subscription =
                 mMusicRepository.getPlaylist(MusicDataSourceContract.PlaylistType.ALL)
@@ -71,11 +71,34 @@ public class PlayerPresenter implements PlayerContract.Presenter {
                 .subscribe(new Action1<List<Song>>() {
                     @Override
                     public void call(List<Song> songs) {
-                        currentSongList = songs;
+                        updatePlaylist(songs, songId);
                         refreshView();
                     }
                 });
         mSubscriptions.add(subscription);
+    }
+
+    @Override
+    public Song getCurrentPlayingSong() {
+        return currentSongList.get(playingSongIndex);
+    }
+
+    @Override
+    public Song getNextSong() {
+        if (playingSongIndex == currentSongList.size()) {
+            playingSongIndex = 0;
+        }
+        playingSongIndex++;
+        return getCurrentPlayingSong();
+    }
+
+    private void updatePlaylist(List<Song> songs, long songId) {
+        currentSongList = songs;
+        for (Song song : currentSongList) {
+            if (song.getSongId() == songId) {
+                playingSongIndex = currentSongList.indexOf(song);
+            }
+        }
     }
 
     private void refreshView() {

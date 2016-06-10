@@ -1,7 +1,10 @@
 package com.lennonwoo.rubber.ui.fragment;
 
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +18,7 @@ import android.widget.TextView;
 import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.contract.PlayerContract;
 import com.lennonwoo.rubber.data.model.local.Song;
+import com.lennonwoo.rubber.service.PlayerService;
 import com.lennonwoo.rubber.ui.widget.CircleProgressView;
 import com.lennonwoo.rubber.utils.BlurTransformation;
 import com.lennonwoo.rubber.utils.RoundedTransformation;
@@ -28,9 +32,30 @@ import butterknife.ButterKnife;
 
 public class PlayerFragment extends Fragment implements PlayerContract.View, CircleProgressView.SongOperation {
 
+    public static final String ACTION_PLAY_ALL = "com.lennonwoo.playall";
+
+    public static final String ACTION_PLAY_FAV = "com.lennonwoo.playfav";
+
+    public static final String SONG_ID = "songId";
+
     private Context context;
 
     private PlayerContract.Presenter presenter;
+
+    private BroadcastReceiver br = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case ACTION_PLAY_ALL:
+                    long songId = intent.getLongExtra(SONG_ID, 0);
+                    presenter.loadAllPlaylist(songId);
+                    Intent intent1 = new Intent();
+                    intent.setAction(PlayerService.ACTION_CHANGE_SONG);
+                    context.sendBroadcast(intent);
+                    break;
+            }
+        }
+    };
 
     @BindView(R.id.song_art_small)
     ImageView songArtSmall;
@@ -62,16 +87,28 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_PLAY_ALL);
+        filter.addAction(ACTION_PLAY_FAV);
+        context.registerReceiver(br, filter);
         presenter.subscribe();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        context.unregisterReceiver(br);
         presenter.unsubscribe();
     }
+
+
 
     @Override
     public void setPresenter(PlayerContract.Presenter presenter) {
