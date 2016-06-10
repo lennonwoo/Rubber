@@ -30,7 +30,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     @BindView(R.id.song_info_small)
     TextView songInfoSmall;
     @BindView(R.id.play_stop)
-    ImageView playStop;
+    ImageView resumePause;
     @BindView(R.id.blur_img)
     ImageView blurImg;
     @BindView(R.id.song_info_large)

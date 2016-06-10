@@ -20,7 +20,6 @@ public interface SongListContract {
 
         void loadSongList();
 
-        void loadAlbumList();
     }
 
 }

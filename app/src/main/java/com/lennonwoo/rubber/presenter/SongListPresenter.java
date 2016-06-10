@@ -1,16 +1,11 @@
 package com.lennonwoo.rubber.presenter;
 
-import android.util.Log;
-
 import com.lennonwoo.rubber.contract.MusicDataSourceContract;
 import com.lennonwoo.rubber.contract.SongListContract;
-import com.lennonwoo.rubber.data.model.local.Album;
 import com.lennonwoo.rubber.data.model.local.Song;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
 import rx.Observer;
@@ -30,8 +25,8 @@ public class SongListPresenter implements SongListContract.Presenter {
 
     private CompositeSubscription mSubscriptions;
 
-    private List<Song> mCacheSongs;
-    private Map<Long, String> albumArtMap;
+//    private List<Song> mCacheSongs;
+//    private Map<Long, String> albumArtMap;
 
     public SongListPresenter(SongListContract.View songListView, MusicDataSourceContract musicRepository) {
         view = songListView;
@@ -42,8 +37,8 @@ public class SongListPresenter implements SongListContract.Presenter {
 
     @Override
     public void subscribe() {
-        init();
-        loadAlbumList();
+//        init();
+//        loadAlbumList();
         loadSongList();
     }
 
@@ -85,10 +80,10 @@ public class SongListPresenter implements SongListContract.Presenter {
 
                     @Override
                     public void onNext(List<Song> songs) {
-                        Log.d(TAG, "onNext");
-                        for (Song song : songs) {
-                            song.setArtPath(albumArtMap.get(song.getAlbumId()));
-                        }
+//                        Log.d(TAG, "onNext");
+//                        for (Song song : songs) {
+//                            song.setArtPath(albumArtMap.get(song.getAlbumId()));
+//                        }
                         Collections.shuffle(songs);
                         processSongs(songs);
                     }
@@ -96,36 +91,36 @@ public class SongListPresenter implements SongListContract.Presenter {
         mSubscriptions.add(subscription);
     }
 
-    @Override
-    public void loadAlbumList() {
-        Subscription subscription = mMusicRepository
-                .getAlbumList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Album>>() {
-                    @Override
-                    public void onCompleted() {
-                        //TODO
-                    }
+//    @Override
+//    public void loadAlbumList() {
+//        Subscription subscription = mMusicRepository
+//                .getAlbumList()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<List<Album>>() {
+//                    @Override
+//                    public void onCompleted() {
+//                        //TODO
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        //TODO
+//                    }
+//
+//                    @Override
+//                    public void onNext(List<Album> alba) {
+//                        for (Album album : alba) {
+//                            albumArtMap.put(album.getAlbumId(), album.getArtPath());
+//                        }
+//                    }
+//                });
+//        mSubscriptions.add(subscription);
+//    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        //TODO
-                    }
-
-                    @Override
-                    public void onNext(List<Album> alba) {
-                        for (Album album : alba) {
-                            albumArtMap.put(album.getAlbumId(), album.getArtPath());
-                        }
-                    }
-                });
-        mSubscriptions.add(subscription);
-    }
-
-    private void init() {
-        albumArtMap = new HashMap<>();
-    }
+//    private void init() {
+//        albumArtMap = new HashMap<>();
+//    }
 
     private void processSongs(List<Song> songs) {
         if (songs.size() == 0) {
