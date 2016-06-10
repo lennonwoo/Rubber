@@ -79,16 +79,31 @@ public class PlayerPresenter implements PlayerContract.Presenter {
     }
 
     @Override
+    public void refreshView() {
+        view.setRecyclerItems(currentSongList);
+        view.setPlayingSongInfo(currentSongList.get(playingSongIndex));
+    }
+
+    @Override
     public Song getCurrentPlayingSong() {
         return currentSongList.get(playingSongIndex);
     }
 
     @Override
+    public Song getPrevSong() {
+        playingSongIndex--;
+        if (playingSongIndex < 0) {
+            playingSongIndex = currentSongList.size() - 1;
+        }
+        return getCurrentPlayingSong();
+    }
+
+    @Override
     public Song getNextSong() {
-        if (playingSongIndex == currentSongList.size()) {
+        playingSongIndex++;
+        if (playingSongIndex >= currentSongList.size()) {
             playingSongIndex = 0;
         }
-        playingSongIndex++;
         return getCurrentPlayingSong();
     }
 
@@ -99,11 +114,6 @@ public class PlayerPresenter implements PlayerContract.Presenter {
                 playingSongIndex = currentSongList.indexOf(song);
             }
         }
-    }
-
-    private void refreshView() {
-        view.setRecyclerItems(currentSongList);
-        view.setPlayingSongInfo(currentSongList.get(playingSongIndex));
     }
 
 }

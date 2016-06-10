@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //TODO unbind service ~question..
+        stopService(new Intent(this, PlayerService.class));
     }
 
     private void init() {

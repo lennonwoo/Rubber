@@ -29,12 +29,15 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class PlayerFragment extends Fragment implements PlayerContract.View, CircleProgressView.SongOperation {
 
     public static final String ACTION_PLAY_ALL = "com.lennonwoo.playall";
 
     public static final String ACTION_PLAY_FAV = "com.lennonwoo.playfav";
+
+    public static final String ACTION_UPDATE_FRAGMENT = "com.lennon.updateFragment";
 
     public static final String SONG_ID = "songId";
 
@@ -53,6 +56,8 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
                     intent.setAction(PlayerService.ACTION_CHANGE_SONG);
                     context.sendBroadcast(intent);
                     break;
+                case ACTION_UPDATE_FRAGMENT:
+                    presenter.refreshView();
             }
         }
     };
@@ -76,6 +81,12 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     @BindView(R.id.fab_more)
     FloatingActionButton fabMore;
 
+    @OnClick(R.id.fab_more)
+    void next() {
+        //TODO test next function
+        nextSong();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -97,6 +108,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_PLAY_ALL);
         filter.addAction(ACTION_PLAY_FAV);
+        filter.addAction(ACTION_UPDATE_FRAGMENT);
         context.registerReceiver(br, filter);
         presenter.subscribe();
     }
@@ -117,7 +129,9 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
 
     @Override
     public void nextSong() {
-
+        Intent intent = new Intent();
+        intent.setAction(PlayerService.ACTION_NEXT_SONG);
+        context.sendBroadcast(intent);
     }
 
     @Override
@@ -132,6 +146,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
 
     @Override
     public void setPlayingSongInfo(Song currentSong) {
+        //TODO change image more gently
         Picasso.with(context)
                 .load(new File(currentSong.getArtPath()))
                 .resize(250, 250)

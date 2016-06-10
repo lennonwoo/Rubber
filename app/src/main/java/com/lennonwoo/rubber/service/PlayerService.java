@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.lennonwoo.rubber.contract.PlayerContract;
 import com.lennonwoo.rubber.data.model.local.Song;
+import com.lennonwoo.rubber.ui.fragment.PlayerFragment;
 
 import java.io.IOException;
 
@@ -21,12 +22,13 @@ public class PlayerService extends Service {
 //    public static final String ACTION_PLAY_SHUFFLE = "Play shuffle";
 //    public static final String ACTION_PLAY_ALL = "play all";
 //    public static final String ACTION_PLAY_SINGLE = "Play singe";
-    public static final String ACTION_NEXT_SONG = "Next_song";
-    public static final String ACTION_PREV_SONG = "Previous song";
-    public static final String ACTION_CHANGE_SONG = "Change song";
-    public static final String ACTION_RESUME = "Resume";
-    public static final String ACTION_PAUSE = "Pause";
+    public static final String ACTION_NEXT_SONG = "com.lennonwoo.nextSong";
+    public static final String ACTION_PREV_SONG = "com.lennonwoo.previousSong";
+    public static final String ACTION_CHANGE_SONG = "com.lennonwoo.changeSong";
+    public static final String ACTION_RESUME = "com.lennonwoo.resume";
+    public static final String ACTION_PAUSE = "com.lennonwoo.pause";
 
+    //This is used to bind presenter
     private MyBinder mBinder = new MyBinder();
 
     private PlayerContract.Presenter presenter;
@@ -39,9 +41,12 @@ public class PlayerService extends Service {
                 try {
                     switch (intent.getAction()) {
                         case ACTION_CHANGE_SONG:
-                            Song song = presenter.getCurrentPlayingSong();
-                            changeSong(song);
+                            Song songCurrent = presenter.getCurrentPlayingSong();
+                            changeSong(songCurrent);
                             break;
+                        case ACTION_NEXT_SONG:
+                            Song songNext = presenter.getNextSong();
+                            changeSong(songNext);
                     }
                 } catch (IOException e){
                     Toast.makeText(PlayerService.this, "This song can't be played", Toast.LENGTH_SHORT).show();
@@ -74,6 +79,9 @@ public class PlayerService extends Service {
 
 
     private void changeSong(Song song) throws IOException{
+        Intent intent = new Intent();
+        intent.setAction(PlayerFragment.ACTION_UPDATE_FRAGMENT);
+        sendBroadcast(intent);
         mediaPlayer.reset();
         mediaPlayer.setDataSource(song.getPath());
         mediaPlayer.prepare();

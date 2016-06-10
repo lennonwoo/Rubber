@@ -22,7 +22,11 @@ public interface PlayerContract {
 
         void loadAllPlaylist(long songId);
 
+        void refreshView();
+
         Song getCurrentPlayingSong();
+
+        Song getPrevSong();
 
         Song getNextSong();
 
