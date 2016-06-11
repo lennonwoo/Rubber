@@ -113,7 +113,8 @@ public class PlayerService extends Service {
                     //TODO
                     break;
                 case ACTION_NOTI_DELETE:
-                    //TODO
+                    mediaPlayer.stop();
+                    notificationManager.cancel(NOTIFICATION_ID);
                     break;
             }
             if (anotherSong != null) {
@@ -212,6 +213,7 @@ public class PlayerService extends Service {
         PendingIntent deletePendingIntent = PendingIntent.getBroadcast(this, 0, deleteIntent, 0);
         notification = new Notification.Builder(this)
                 .setSmallIcon(R.drawable.ic_audiotrack_white_24dp)
+                .setOngoing(false)
                 .setContentIntent(contentPendingIntent)
                 .setDeleteIntent(deletePendingIntent)
                 .build();
@@ -237,7 +239,6 @@ public class PlayerService extends Service {
         notification.bigContentView.setOnClickPendingIntent(R.id.notification_play_pause_song, pausePendingIntent);
         notification.contentView.setOnClickPendingIntent(R.id.notification_play_pause_song, pausePendingIntent);
 
-        startForeground(NOTIFICATION_ID, notification);
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(NOTIFICATION_ID, notification);
     }
