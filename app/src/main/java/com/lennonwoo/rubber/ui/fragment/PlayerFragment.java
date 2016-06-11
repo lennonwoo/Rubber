@@ -162,6 +162,13 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     }
 
     @Override
+    public void changeSong() {
+        Intent intent = new Intent();
+        intent.setAction(PlayerService.ACTION_CHANGE_SONG);
+        context.sendBroadcast(intent);
+    }
+
+    @Override
     public void changeProgress(int progress) {
 
     }

@@ -27,8 +27,9 @@ import java.io.IOException;
 
 public class PlayerService extends Service {
 
-    public static final String ACTION_PLAY_ALL = "com.lennonwoo.playAll";
-    public static final String ACTION_PLAY_FAV = "com.lennonwoo.playFav";
+    public static final String ACTION_CHANGE_PLAYLIST_ALL = "com.lennonwoo.changeListAll";
+    public static final String ACTION_CHANGE_PLAYLIST_FAV = "com.lennonwoo.changeListFav";
+    public static final String ACTION_CHANGE_SONG = "com.lennonwoo.changeSong";
     public static final String ACTION_NEXT_SONG = "com.lennonwoo.nextSong";
     public static final String ACTION_PREV_SONG = "com.lennonwoo.previousSong";
     public static final String ACTION_START = "com.lennonwoo.start";
@@ -61,8 +62,9 @@ public class PlayerService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION_PLAY_ALL);
-        filter.addAction(ACTION_PLAY_FAV);
+        filter.addAction(ACTION_CHANGE_PLAYLIST_ALL);
+        filter.addAction(ACTION_CHANGE_PLAYLIST_FAV);
+        filter.addAction(ACTION_CHANGE_SONG);
         filter.addAction(ACTION_NEXT_SONG);
         filter.addAction(ACTION_PREV_SONG);
         filter.addAction(ACTION_START);
@@ -91,14 +93,15 @@ public class PlayerService extends Service {
         try {
             Song anotherSong = null;
             switch (intent.getAction()) {
-                case ACTION_PLAY_ALL:
+                case ACTION_CHANGE_PLAYLIST_ALL:
                     int positionAll = intent.getIntExtra(SONG_POSITION, 0);
                     presenter.loadAllPlaylist(positionAll);
-                    anotherSong = presenter.getCurrentPlayingSong();
                     break;
-                case ACTION_PLAY_FAV:
+                case ACTION_CHANGE_PLAYLIST_FAV:
                     int positionFav = intent.getIntExtra(SONG_POSITION, 0);
                     presenter.loadFavPlaylist(positionFav);
+                    break;
+                case ACTION_CHANGE_SONG:
                     anotherSong = presenter.getCurrentPlayingSong();
                     break;
                 case ACTION_PREV_SONG:

@@ -18,6 +18,8 @@ public interface PlayerContract {
 
         void setRecyclerItems(List<Song> playlist);
 
+        void changeSong();
+
     }
 
     interface Presenter extends BasePresenter {

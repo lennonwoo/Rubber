@@ -44,7 +44,6 @@ public class PlayerPresenter implements PlayerContract.Presenter {
     public void subscribe() {
         if (!haveLoaded) {
             mMusicRepository.refreshRepository();
-            loadAllPlaylist(0);
             haveLoaded = true;
         } else {
             refreshView();
@@ -68,6 +67,7 @@ public class PlayerPresenter implements PlayerContract.Presenter {
                     public void call(List<Song> songs) {
                         updatePlaylist(songs, position);
                         refreshView();
+                        view.changeSong();
                     }
                 });
         mSubscriptions.add(subscription);
@@ -85,6 +85,7 @@ public class PlayerPresenter implements PlayerContract.Presenter {
                     public void call(List<Song> songs) {
                         updatePlaylist(songs, position);
                         refreshView();
+                        view.changeSong();
                     }
                 });
         mSubscriptions.add(subscription);
