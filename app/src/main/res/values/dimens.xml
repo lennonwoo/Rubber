@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="sliding_up_panel_bottom_height">48dp</dimen>
+    <dimen name="sliding_up_panel_bottom_height">70dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="circle_progress_text_size">13sp</dimen>
 </resources>

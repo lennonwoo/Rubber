@@ -28,8 +28,8 @@ import com.lennonwoo.rubber.presenter.SongListPresenter;
 import com.lennonwoo.rubber.service.PlayerService;
 import com.lennonwoo.rubber.ui.fragment.PlayerFragment;
 import com.lennonwoo.rubber.ui.fragment.SongListFragment;
+import com.lennonwoo.rubber.ui.widget.slidinguppanel.SlidingUpPanelLayout;
 import com.lennonwoo.rubber.utils.PermissionChecker;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String ACTION_SHOW_PANEL = "com.lennonwoo.showPanel";
 
-    public static final String OPEN_PANEL = "openPanel";
+    public static final String EXPAND_PANEL = "openPanel";
 
     public static boolean active;
 
@@ -60,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case ACTION_SHOW_PANEL:
-                    if (slidingUpPanelLayout.getPanelState() != SlidingUpPanelLayout.PanelState.EXPANDED) {
-                        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                    if (slidingUpPanelLayout.isPanelHidden()) {
+                        slidingUpPanelLayout.collapsePanel();
                     }
                     break;
             }
@@ -172,10 +172,10 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.main_content_panel, playerFragment)
                 .commit();
 
-        if (getIntent().getBooleanExtra(OPEN_PANEL, false)) {
-            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+        if (getIntent().getBooleanExtra(EXPAND_PANEL, false)) {
+            slidingUpPanelLayout.expandPanel();
         } else {
-            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+            slidingUpPanelLayout.expandPanel();
         }
     }
 

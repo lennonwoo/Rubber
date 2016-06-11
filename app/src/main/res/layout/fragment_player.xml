@@ -8,14 +8,13 @@
     <LinearLayout
         android:id="@+id/player_small"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/sliding_up_panel_bottom_height"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/song_art_small"
-            android:padding="8dp"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/sliding_up_panel_bottom_height"
+            android:layout_height="@dimen/sliding_up_panel_bottom_height"
             android:src="@drawable/default_art" />
 
         <TextView

@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lennonwoo.rubber.R;
@@ -23,10 +24,10 @@ import com.lennonwoo.rubber.contract.PlayerContract;
 import com.lennonwoo.rubber.data.model.local.Song;
 import com.lennonwoo.rubber.service.PlayerService;
 import com.lennonwoo.rubber.ui.widget.CircleProgressView;
+import com.lennonwoo.rubber.ui.widget.slidinguppanel.SlidingUpPanelLayout;
 import com.lennonwoo.rubber.utils.BlurTransformation;
 import com.lennonwoo.rubber.utils.PaletteGeneratorTransformation;
 import com.lennonwoo.rubber.utils.RoundedTransformation;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -57,6 +58,8 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
 
     private SlidingUpPanelLayout slidingUpPanelLayout;
 
+    @BindView(R.id.player_small)
+    LinearLayout playerSmall;
     @BindView(R.id.song_art_small)
     ImageView songArtSmall;
     @BindView(R.id.song_info_small)
@@ -92,8 +95,8 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
                     circleProgress.pause();
                     break;
                 case ACTION_UPDATE_FRAGMENT:
-                    if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.HIDDEN) {
-                        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    if (slidingUpPanelLayout.isPanelHidden()) {
+                        slidingUpPanelLayout.collapsePanel();
                     }
                     presenter.refreshView();
                     break;
@@ -200,7 +203,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         //TODO change image more gently -- Picasso~~!!
         Picasso.with(context)
                 .load(new File(song.getArtPath()))
-                .resize(50, 50)
+                .resize(60, 60)
                 .centerCrop()
                 .transform(new PaletteGeneratorTransformation(24))
                 .into(songArtSmall, new PaletteGeneratorTransformation.Callback(songArtSmall) {
