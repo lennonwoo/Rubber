@@ -169,7 +169,7 @@ public class CircleProgressView extends View {
 
     public CircleProgressView begin() {
         if (newSong) {
-            progressHandler.postDelayed(runnableProgress, 0);
+            progressHandler.postDelayed(runnableProgress, PROGRESS_DELAY);
             newSong = false;
         }
         currentProgress = 0;
@@ -179,7 +179,7 @@ public class CircleProgressView extends View {
 
     public void start() {
         bePlaying = true;
-        progressHandler.postDelayed(runnableProgress, 0);
+        progressHandler.postDelayed(runnableProgress, PROGRESS_DELAY);
     }
 
     public void pause() {

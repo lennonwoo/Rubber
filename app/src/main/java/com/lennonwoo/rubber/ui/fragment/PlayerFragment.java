@@ -35,6 +35,8 @@ import butterknife.OnClick;
 
 public class PlayerFragment extends Fragment implements PlayerContract.View, CircleProgressView.SongOperation {
 
+    public static final String TAG = PlayerFragment.class.getSimpleName();
+
     public static final String ACTION_START = "com.lennonwoo.fragment.begin";
     public static final String ACTION_PAUSE = "com.lennonwoo.fragment.pause";
     public static final String ACTION_UPDATE_FRAGMENT = "com.lennonwoo.fragment.updateFragment";
@@ -192,7 +194,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
 
     @Override
     public void setPlayingSongInfo(Song song) {
-        //TODO change image more gently
+        //TODO change image more gently -- Picasso~~!!
         Picasso.with(context)
                 .load(new File(song.getArtPath()))
                 .resize(250, 250)

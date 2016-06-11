@@ -151,6 +151,11 @@ public class PlayerService extends Service {
             if (anotherSong != null) {
                 cutOffSong(anotherSong);
                 updateNotification(anotherSong);
+                /*
+                You can also just call presenter.refreshView() in this service
+                but　it's unnecessary to change view when PlayerFragment is invisible
+                so I send a broadcast so that view won't change when fragment is pause
+                 */
                 Intent updateFragment = new Intent();
                 updateFragment.setAction(PlayerFragment.ACTION_UPDATE_FRAGMENT);
                 sendBroadcast(updateFragment);
@@ -161,14 +166,6 @@ public class PlayerService extends Service {
     }
 
     private void cutOffSong(Song song) throws IOException{
-        /*
-        You can also just call presenter.refreshView() in this service
-        but　it's unnecessary to change view when PlayerFragment is invisible
-        so I send a broadcast so that view won't change when fragment is pause
-         */
-        Intent intent = new Intent();
-        intent.setAction(PlayerFragment.ACTION_UPDATE_FRAGMENT);
-        sendBroadcast(intent);
         mediaPlayer.reset();
         mediaPlayer.setDataSource(song.getPath());
         mediaPlayer.prepare();
@@ -183,6 +180,9 @@ public class PlayerService extends Service {
                     Toast.makeText(PlayerService.this, "This song can't be played", Toast.LENGTH_SHORT).show();
                 }
                 updateNotification(song);
+                Intent updateFragment = new Intent();
+                updateFragment.setAction(PlayerFragment.ACTION_UPDATE_FRAGMENT);
+                sendBroadcast(updateFragment);
             }
         });
     }
