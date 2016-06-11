@@ -29,19 +29,26 @@ public class PlayerPresenter implements PlayerContract.Presenter {
 
     private Random rand;
 
+    private boolean haveLoaded;
+
     public PlayerPresenter(PlayerContract.View playerView, MusicDataSourceContract musicRepository) {
         view = playerView;
         mMusicRepository = musicRepository;
         mSubscriptions = new CompositeSubscription();
         view.setPresenter(this);
+        playingSongIndex = 0;
+        rand = new Random();
     }
 
     @Override
     public void subscribe() {
-        playingSongIndex = 0;
-        rand = new Random();
-        mMusicRepository.refreshRepository();
-        loadAllPlaylist(0);
+        if (!haveLoaded) {
+            mMusicRepository.refreshRepository();
+            loadAllPlaylist(0);
+            haveLoaded = true;
+        } else {
+            refreshView();
+        }
     }
 
     @Override

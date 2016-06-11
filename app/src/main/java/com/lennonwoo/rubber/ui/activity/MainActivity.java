@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     SongListPresenter songListPresenter;
     PlayerPresenter playerPresenter;
 
+    private ServiceConnection connection;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,8 +74,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //TODO unbind service ~question..
-        stopService(new Intent(this, PlayerService.class));
+        unbindService(connection);
     }
 
     private void init() {
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         songListPresenter = new SongListPresenter(songListFragment, musicRepository);
         playerPresenter = new PlayerPresenter(playerFragment, musicRepository);
 
-        bindService(new Intent(this, PlayerService.class), new ServiceConnection() {
+        bindService(new Intent(this, PlayerService.class), connection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 PlayerService.MyBinder binder = (PlayerService.MyBinder) service;
