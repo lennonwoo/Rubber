@@ -23,6 +23,7 @@ import com.lennonwoo.rubber.service.PlayerService;
 import com.lennonwoo.rubber.ui.widget.CircleProgressView;
 import com.lennonwoo.rubber.utils.BlurTransformation;
 import com.lennonwoo.rubber.utils.RoundedTransformation;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -34,7 +35,9 @@ import butterknife.OnClick;
 
 public class PlayerFragment extends Fragment implements PlayerContract.View, CircleProgressView.SongOperation {
 
-    public static final String ACTION_UPDATE_FRAGMENT = "com.lennon.updateFragment";
+    public static final String ACTION_START = "com.lennonwoo.fragment.begin";
+    public static final String ACTION_PAUSE = "com.lennonwoo.fragment.pause";
+    public static final String ACTION_UPDATE_FRAGMENT = "com.lennonwoo.fragment.updateFragment";
 
     //preference static string
     private static final String MUSIC_PREFERENCE = "music_preference";
@@ -47,15 +50,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
 
     private PlayerContract.Presenter presenter;
 
-    private BroadcastReceiver br = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            switch (intent.getAction()) {
-                case ACTION_UPDATE_FRAGMENT:
-                    presenter.refreshView();
-            }
-        }
-    };
+    private SlidingUpPanelLayout slidingUpPanelLayout;
 
     @BindView(R.id.song_art_small)
     ImageView songArtSmall;
@@ -79,8 +74,27 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     @OnClick(R.id.fab_more)
     void next() {
         //TODO test next function
-        nextSong();
     }
+
+    private BroadcastReceiver br = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case ACTION_START:
+                    circleProgress.start();
+                    break;
+                case ACTION_PAUSE:
+                    circleProgress.pause();
+                    break;
+                case ACTION_UPDATE_FRAGMENT:
+                    if (slidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.HIDDEN) {
+                        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    }
+                    presenter.refreshView();
+                    break;
+            }
+        }
+    };
 
     @Nullable
     @Override
@@ -114,6 +128,8 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     public void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_START);
+        filter.addAction(ACTION_PAUSE);
         filter.addAction(ACTION_UPDATE_FRAGMENT);
         context.registerReceiver(br, filter);
         presenter.subscribe();
@@ -155,13 +171,6 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     }
 
     @Override
-    public void nextSong() {
-        Intent intent = new Intent();
-        intent.setAction(PlayerService.ACTION_NEXT_SONG);
-        context.sendBroadcast(intent);
-    }
-
-    @Override
     public void changeSong() {
         Intent intent = new Intent();
         intent.setAction(PlayerService.ACTION_CHANGE_SONG);
@@ -169,8 +178,11 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     }
 
     @Override
-    public void changeProgress(int progress) {
-
+    public void seekSong(int progress) {
+        Intent intent = new Intent();
+        intent.setAction(PlayerService.ACTION_SEEK_SONG);
+        intent.putExtra(PlayerService.SEEK_SONG_TO, progress);
+        context.sendBroadcast(intent);
     }
 
     @Override
@@ -179,23 +191,28 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     }
 
     @Override
-    public void setPlayingSongInfo(Song currentSong) {
+    public void setPlayingSongInfo(Song song) {
         //TODO change image more gently
         Picasso.with(context)
-                .load(new File(currentSong.getArtPath()))
+                .load(new File(song.getArtPath()))
                 .resize(250, 250)
                 .centerCrop()
                 .transform(new RoundedTransformation(125))
                 .into(roundedImg);
         Picasso.with(context)
-                .load(new File(currentSong.getArtPath()))
+                .load(new File(song.getArtPath()))
                 .transform(new BlurTransformation(context))
                 .into(blurImg);
+        circleProgress
+                .setSongDuration(song.getDuration() / 1000)
+                .begin();
+    }
+
+    public void setSlidingUpPanelLayout(SlidingUpPanelLayout slidingUpPanelLayout) {
+        this.slidingUpPanelLayout = slidingUpPanelLayout;
     }
 
     private void init() {
-        circleProgress
-                .setSongDuration(219)
-                .setSongOperation(this);
+        circleProgress.setSongOperation(this);
     }
 }

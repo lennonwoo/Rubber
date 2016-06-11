@@ -27,17 +27,19 @@ import java.io.IOException;
 
 public class PlayerService extends Service {
 
-    public static final String ACTION_CHANGE_PLAYLIST_ALL = "com.lennonwoo.changeListAll";
-    public static final String ACTION_CHANGE_PLAYLIST_FAV = "com.lennonwoo.changeListFav";
-    public static final String ACTION_CHANGE_SONG = "com.lennonwoo.changeSong";
-    public static final String ACTION_NEXT_SONG = "com.lennonwoo.nextSong";
-    public static final String ACTION_PREV_SONG = "com.lennonwoo.previousSong";
-    public static final String ACTION_START = "com.lennonwoo.start";
-    public static final String ACTION_PAUSE = "com.lennonwoo.pause";
-    public static final String ACTION_NOTI_CONTENT = "com.lennon.notificationClick";
-    public static final String ACTION_NOTI_DELETE = "com.lennon.notificationDelete";
+    public static final String ACTION_CHANGE_PLAYLIST_ALL = "com.lennonwoo.service.changeListAll";
+    public static final String ACTION_CHANGE_PLAYLIST_FAV = "com.lennonwoo.service.changeListFav";
+    public static final String ACTION_CHANGE_SONG = "com.lennonwoo.service.changeSong";
+    public static final String ACTION_NEXT_SONG = "com.lennonwoo.service.nextSong";
+    public static final String ACTION_PREV_SONG = "com.lennonwoo.service.previousSong";
+    public static final String ACTION_START = "com.lennonwoo.service.begin";
+    public static final String ACTION_PAUSE = "com.lennonwoo.service.pause";
+    public static final String ACTION_SEEK_SONG = "com.lennonwoo.service.seekSong";
+    public static final String ACTION_NOTI_CONTENT = "com.lennon.service.notificationClick";
+    public static final String ACTION_NOTI_DELETE = "com.lennon.service.notificationDelete";
 
     public static final String SONG_POSITION = "songPosition";
+    public static final String SEEK_SONG_TO = "seekSongTo";
 
     private static final int NOTIFICATION_ID = 325018;
 
@@ -69,6 +71,7 @@ public class PlayerService extends Service {
         filter.addAction(ACTION_PREV_SONG);
         filter.addAction(ACTION_START);
         filter.addAction(ACTION_PAUSE);
+        filter.addAction(ACTION_SEEK_SONG);
         filter.addAction(ACTION_NOTI_CONTENT);
         filter.addAction(ACTION_NOTI_DELETE);
         registerReceiver(br, filter);
@@ -113,11 +116,20 @@ public class PlayerService extends Service {
                 case ACTION_START:
                     mediaPlayer.start();
                     changeNotificationStatus(true);
+                    Intent start = new Intent();
+                    start.setAction(PlayerFragment.ACTION_START);
+                    sendBroadcast(start);
                     break;
                 case ACTION_PAUSE:
                     mediaPlayer.pause();
                     changeNotificationStatus(false);
+                    Intent pause = new Intent();
+                    pause.setAction(PlayerFragment.ACTION_PAUSE);
+                    sendBroadcast(pause);
                     break;
+                case ACTION_SEEK_SONG:
+                    int seekTo = intent.getIntExtra(SEEK_SONG_TO, 0);
+                    mediaPlayer.seekTo(seekTo);
                 case ACTION_NOTI_CONTENT:
                     Intent showPanel;
                     if (MainActivity.active) {
@@ -139,6 +151,9 @@ public class PlayerService extends Service {
             if (anotherSong != null) {
                 cutOffSong(anotherSong);
                 updateNotification(anotherSong);
+                Intent updateFragment = new Intent();
+                updateFragment.setAction(PlayerFragment.ACTION_UPDATE_FRAGMENT);
+                sendBroadcast(updateFragment);
             }
         } catch (IOException e){
             Toast.makeText(PlayerService.this, "This song can't be played", Toast.LENGTH_SHORT).show();

@@ -16,8 +16,6 @@ import com.lennonwoo.rubber.utils.Utils;
 
 public class CircleProgressView extends View {
 
-    private static final int MAX_PROGRESS = 100;
-
     private static final int PROGRESS_DELAY = 1000;
 
     private static final float STROKE_WIDTH = 12.0f;
@@ -35,6 +33,8 @@ public class CircleProgressView extends View {
     private boolean bePlaying;
 
     private boolean firstDraw;
+
+    private boolean newSong;
 
     private RectF rectCircle;
 
@@ -55,11 +55,11 @@ public class CircleProgressView extends View {
                 return;
             }
             currentProgress++;
-            postInvalidate();
-            if (currentProgress > MAX_PROGRESS) {
-                songOperation.nextSong();
+            if (currentProgress >= songDuration) {
+                newSong = true;
                 return;
             }
+            postInvalidate();
             progressHandler.postDelayed(runnableProgress, PROGRESS_DELAY);
         }
     };
@@ -87,17 +87,22 @@ public class CircleProgressView extends View {
         super.onDraw(canvas);
         if (bePlaying || firstDraw) {
             canvas.drawArc(rectCircle, 150, 240, false, paintEmptyProgress);
-            canvas.drawArc(rectCircle, 150,
-                    (240 * currentProgress) / MAX_PROGRESS, false, paintLoadedProgress);
+            if (currentProgress == 0) {
+                canvas.drawArc(rectCircle, 150,
+                        (float) (0.0001), false, paintEmptyProgress);
+            } else {
+                canvas.drawArc(rectCircle, 150,
+                        (float) (240 * currentProgress * 1.0) / songDuration, false, paintLoadedProgress);
+            }
 
-            String passedTime = Utils.durationToString(currentProgress / MAX_PROGRESS * songDuration);
+            String passedTime = Utils.durationToString(currentProgress );
             paintTime.getTextBounds(passedTime, 0, passedTime.length(), rectText);
             canvas.drawText(passedTime,
                     (float) (squareCenter * Math.cos(Math.toRadians(35.0))) + squareSide / 2.0f - rectText.width() / 1.5f,
                     (float) (squareCenter * Math.sin(Math.toRadians(35.0))) + squareSide / 2.0f + rectText.height() + 15.0f,
                     paintTime);
 
-            String leftTime = Utils.durationToString(songDuration - currentProgress / MAX_PROGRESS * songDuration);
+            String leftTime = Utils.durationToString(songDuration - currentProgress);
             paintTime.getTextBounds(leftTime, 0, leftTime.length(), rectText);
             canvas.drawText(leftTime,
                     (float) (squareCenter * -Math.cos(Math.toRadians(35.0))) + squareSide / 2.0f - rectText.width() / 3f,
@@ -130,8 +135,8 @@ public class CircleProgressView extends View {
                     d = -d;
                     d += 210;
                 }
-                currentProgress = (int) ((d / 240) * MAX_PROGRESS);
-                songOperation.changeProgress(currentProgress);
+                currentProgress = (int) ((d / 240) * songDuration);
+                songOperation.seekSong(currentProgress);
                 break;
         }
         return super.onTouchEvent(event);
@@ -162,6 +167,25 @@ public class CircleProgressView extends View {
         return this;
     }
 
+    public CircleProgressView begin() {
+        if (newSong) {
+            progressHandler.postDelayed(runnableProgress, 0);
+            newSong = false;
+        }
+        currentProgress = 0;
+        bePlaying = true;
+        return this;
+    }
+
+    public void start() {
+        bePlaying = true;
+        progressHandler.postDelayed(runnableProgress, 0);
+    }
+
+    public void pause() {
+        bePlaying = false;
+    }
+
     private void init(Context context, AttributeSet attrs) {
         setWillNotDraw(false);
 
@@ -186,7 +210,10 @@ public class CircleProgressView extends View {
 
         bePlaying = true;
         firstDraw = true;
-        currentProgress = 1;
+        newSong = true;
+        //initialize value to initialize onDraw()
+        currentProgress = 0;
+        songDuration = 1;
     }
 
     private void initPaint() {
@@ -210,8 +237,7 @@ public class CircleProgressView extends View {
 
     public interface SongOperation {
 
-        void nextSong();
+        void seekSong(int progress);
 
-        void changeProgress(int progress);
     }
 }

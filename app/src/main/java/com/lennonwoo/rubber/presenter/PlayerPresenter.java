@@ -66,7 +66,6 @@ public class PlayerPresenter implements PlayerContract.Presenter {
                     @Override
                     public void call(List<Song> songs) {
                         updatePlaylist(songs, position);
-                        refreshView();
                         view.changeSong();
                     }
                 });
@@ -84,7 +83,6 @@ public class PlayerPresenter implements PlayerContract.Presenter {
                     @Override
                     public void call(List<Song> songs) {
                         updatePlaylist(songs, position);
-                        refreshView();
                         view.changeSong();
                     }
                 });
