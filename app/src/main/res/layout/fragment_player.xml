@@ -14,8 +14,8 @@
         <ImageView
             android:id="@+id/song_art_small"
             android:padding="8dp"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:src="@drawable/default_art" />
 
         <TextView

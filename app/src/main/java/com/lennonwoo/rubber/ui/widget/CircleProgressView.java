@@ -148,17 +148,21 @@ public class CircleProgressView extends View {
     }
 
     public CircleProgressView setTimeTextColor(int timeTextColor) {
+        //TODO remove useless local timeTextColor!
         this.timeTextColor = timeTextColor;
+        paintTime.setColor(timeTextColor);
         return this;
     }
 
     public CircleProgressView setEmptyProgressColor(int emptyProgressColor) {
         this.emptyProgressColor = emptyProgressColor;
+        paintEmptyProgress.setColor(emptyProgressColor);
         return this;
     }
 
     public CircleProgressView setLoadedProgressColor(int loadedProgressColor) {
         this.loadedProgressColor = loadedProgressColor;
+        paintLoadedProgress.setColor(loadedProgressColor);
         return this;
     }
 

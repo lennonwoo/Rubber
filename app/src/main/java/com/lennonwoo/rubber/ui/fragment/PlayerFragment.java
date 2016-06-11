@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import com.lennonwoo.rubber.data.model.local.Song;
 import com.lennonwoo.rubber.service.PlayerService;
 import com.lennonwoo.rubber.ui.widget.CircleProgressView;
 import com.lennonwoo.rubber.utils.BlurTransformation;
+import com.lennonwoo.rubber.utils.PaletteGeneratorTransformation;
 import com.lennonwoo.rubber.utils.RoundedTransformation;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
@@ -195,6 +198,28 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     @Override
     public void setPlayingSongInfo(Song song) {
         //TODO change image more gently -- Picasso~~!!
+        Picasso.with(context)
+                .load(new File(song.getArtPath()))
+                .resize(50, 50)
+                .centerCrop()
+                .transform(new PaletteGeneratorTransformation(24))
+                .into(songArtSmall, new PaletteGeneratorTransformation.Callback(songArtSmall) {
+                    @Override
+                    public void onPalette(Palette palette) {
+                        circleProgress.setLoadedProgressColor(
+                                    palette.getVibrantColor(context.getResources().getColor(R.color.colorAccent))
+                            );
+                        circleProgress.setEmptyProgressColor(
+                                    palette.getLightMutedColor(context.getResources().getColor(R.color.white))
+                            );
+                        fabMore.setBackgroundTintList(
+                                    ColorStateList.valueOf(palette.getVibrantColor(context.getResources().getColor(R.color.colorAccent)))
+                            );
+                        circleProgress.setTimeTextColor(
+                                    palette.getLightVibrantColor(context.getResources().getColor(R.color.colorPrimary))
+                            );
+                        }
+                    });
         Picasso.with(context)
                 .load(new File(song.getArtPath()))
                 .resize(250, 250)

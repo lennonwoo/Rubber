@@ -46,6 +46,5 @@ dependencies {
 
     // Picasso
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.github.florent37:picassopalette:2.0.0'
 
 }
