@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.contract.PlayerContract;
 import com.lennonwoo.rubber.data.model.local.Song;
+import com.lennonwoo.rubber.ui.activity.MainActivity;
 import com.lennonwoo.rubber.ui.fragment.PlayerFragment;
 import com.squareup.picasso.Picasso;
 
@@ -35,7 +36,7 @@ public class PlayerService extends Service {
     public static final String ACTION_NOTI_CONTENT = "com.lennon.notificationClick";
     public static final String ACTION_NOTI_DELETE = "com.lennon.notificationDelete";
 
-    public static final String SONG_ID = "songId";
+    public static final String SONG_POSITION = "songPosition";
 
     private static final int NOTIFICATION_ID = 325018;
 
@@ -52,7 +53,7 @@ public class PlayerService extends Service {
     private BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            handleBroadcase(intent);
+            handleBroadcast(intent);
         }
     };
 
@@ -81,18 +82,23 @@ public class PlayerService extends Service {
         return super.onUnbind(intent);
     }
 
-    private void handleBroadcase(Intent intent) {
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    private void handleBroadcast(Intent intent) {
         try {
             Song anotherSong = null;
             switch (intent.getAction()) {
                 case ACTION_PLAY_ALL:
-                    long songId = intent.getLongExtra(SONG_ID, 0);
-                    presenter.loadAllPlaylist(songId);
+                    int positionAll = intent.getIntExtra(SONG_POSITION, 0);
+                    presenter.loadAllPlaylist(positionAll);
                     anotherSong = presenter.getCurrentPlayingSong();
                     break;
                 case ACTION_PLAY_FAV:
-                    long favId = intent.getLongExtra(SONG_ID, 0);
-                    presenter.loadFavPlaylist(favId);
+                    int positionFav = intent.getIntExtra(SONG_POSITION, 0);
+                    presenter.loadFavPlaylist(positionFav);
                     anotherSong = presenter.getCurrentPlayingSong();
                     break;
                 case ACTION_PREV_SONG:
@@ -110,7 +116,17 @@ public class PlayerService extends Service {
                     changeNotificationStatus(false);
                     break;
                 case ACTION_NOTI_CONTENT:
-                    //TODO
+                    Intent showPanel;
+                    if (MainActivity.active) {
+                        showPanel = new Intent();
+                        showPanel.setAction(MainActivity.ACTION_SHOW_PANEL);
+                        sendBroadcast(showPanel);
+                    } else {
+                        showPanel = new Intent(this, MainActivity.class);
+                        showPanel.putExtra(MainActivity.OPEN_PANEL, true);
+                        showPanel.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(showPanel);
+                    }
                     break;
                 case ACTION_NOTI_DELETE:
                     mediaPlayer.stop();
@@ -148,6 +164,7 @@ public class PlayerService extends Service {
                 } catch (IOException e) {
                     Toast.makeText(PlayerService.this, "This song can't be played", Toast.LENGTH_SHORT).show();
                 }
+                updateNotification(song);
             }
         });
     }
@@ -246,6 +263,9 @@ public class PlayerService extends Service {
     public class MyBinder extends Binder {
         public void setPresenter(PlayerContract.Presenter playerPresenter) {
             presenter = playerPresenter;
+        }
+        public void setActivityActive(boolean active) {
+
         }
     }
 

@@ -1,8 +1,11 @@
 package com.lennonwoo.rubber.ui.activity;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +36,12 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String ACTION_SHOW_PANEL = "com.lennonwoo.showPanel";
+
+    public static final String OPEN_PANEL = "openPanel";
+
+    public static boolean active;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.drawer_layout)
@@ -40,12 +49,24 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.sliding_up_pane_layout)
     SlidingUpPanelLayout slidingUpPanelLayout;
 
-    PermissionChecker checker;
+    private PermissionChecker checker;
 
-    SongListPresenter songListPresenter;
-    PlayerPresenter playerPresenter;
+    private  PlayerPresenter playerPresenter;
 
     private ServiceConnection connection;
+
+    private BroadcastReceiver br = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case ACTION_SHOW_PANEL:
+                    if (slidingUpPanelLayout.getPanelState() != SlidingUpPanelLayout.PanelState.EXPANDED) {
+                        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                    }
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,6 +90,22 @@ public class MainActivity extends AppCompatActivity {
         } else {
             init();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        active = true;
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_SHOW_PANEL);
+        registerReceiver(br, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        active = false;
+        unregisterReceiver(br);
     }
 
     @Override
@@ -109,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         PlayerFragment playerFragment = new PlayerFragment();
         MusicRepository musicRepository = MusicRepository.getInstance(
                 MusicLocalDataSource.getInstance(this), MusicRemoteDataSource.getInstace(this));
-        songListPresenter = new SongListPresenter(songListFragment, musicRepository);
+        SongListPresenter songListPresenter = new SongListPresenter(songListFragment, musicRepository);
         playerPresenter = new PlayerPresenter(playerFragment, musicRepository);
 
         bindService(new Intent(this, PlayerService.class), connection = new ServiceConnection() {
@@ -134,7 +171,11 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.main_content_panel, playerFragment)
                 .commit();
 
-        slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        if (getIntent().getBooleanExtra(OPEN_PANEL, false)) {
+            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+        } else {
+            slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+        }
     }
 
     @Override

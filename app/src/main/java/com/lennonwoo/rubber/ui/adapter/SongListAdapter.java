@@ -64,7 +64,9 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setAction(PlayerService.ACTION_PLAY_ALL);
-                intent.putExtra(PlayerService.SONG_ID, songList.get(holder.getAdapterPosition()).getSongId());
+                //TODO click play seem have some trouble!!!
+                int adapter = holder.getAdapterPosition();
+                intent.putExtra(PlayerService.SONG_POSITION, holder.getAdapterPosition());
                 context.sendBroadcast(intent);
             }
         });

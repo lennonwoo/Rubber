@@ -22,9 +22,9 @@ public interface PlayerContract {
 
     interface Presenter extends BasePresenter {
 
-        void loadFavPlaylist(long songId);
+        void loadFavPlaylist(int position);
 
-        void loadAllPlaylist(long songId);
+        void loadAllPlaylist(int position);
 
         void refreshView();
 

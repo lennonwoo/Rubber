@@ -57,7 +57,7 @@ public class PlayerPresenter implements PlayerContract.Presenter {
     }
 
     @Override
-    public void loadFavPlaylist(final long songId) {
+    public void loadFavPlaylist(final int position) {
         mSubscriptions.clear();
         Subscription subscription =
                 mMusicRepository.getPlaylist(MusicDataSourceContract.PlaylistType.FAV)
@@ -66,7 +66,7 @@ public class PlayerPresenter implements PlayerContract.Presenter {
                 .subscribe(new Action1<List<Song>>() {
                     @Override
                     public void call(List<Song> songs) {
-                        updatePlaylist(songs, songId);
+                        updatePlaylist(songs, position);
                         refreshView();
                     }
                 });
@@ -74,7 +74,7 @@ public class PlayerPresenter implements PlayerContract.Presenter {
     }
 
     @Override
-    public void loadAllPlaylist(final long songId) {
+    public void loadAllPlaylist(final int position) {
         mSubscriptions.clear();
         Subscription subscription =
                 mMusicRepository.getPlaylist(MusicDataSourceContract.PlaylistType.ALL)
@@ -83,7 +83,7 @@ public class PlayerPresenter implements PlayerContract.Presenter {
                 .subscribe(new Action1<List<Song>>() {
                     @Override
                     public void call(List<Song> songs) {
-                        updatePlaylist(songs, songId);
+                        updatePlaylist(songs, position);
                         refreshView();
                     }
                 });
@@ -147,13 +147,9 @@ public class PlayerPresenter implements PlayerContract.Presenter {
         return playType;
     }
 
-    private void updatePlaylist(List<Song> songs, long songId) {
+    private void updatePlaylist(List<Song> songs, int position) {
         currentSongList = songs;
-        for (Song song : currentSongList) {
-            if (song.getSongId() == songId) {
-                playingSongIndex = currentSongList.indexOf(song);
-            }
-        }
+        playingSongIndex = position;
     }
 
 }
