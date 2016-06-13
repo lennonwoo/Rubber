@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
         if (getIntent().getBooleanExtra(EXPAND_PANEL, false)) {
             slidingUpPanelLayout.expandPanel();
         } else {
-            slidingUpPanelLayout.expandPanel();
+            slidingUpPanelLayout.hidePanel();
         }
     }
 

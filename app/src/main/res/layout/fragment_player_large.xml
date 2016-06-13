@@ -7,29 +7,27 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:layout_width="400dp"
-        android:layout_height="400dp">
+        android:id="@+id/song_art_layout"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:outlineProvider="bounds"
+        android:elevation="4dp">
 
         <ImageView
             android:id="@+id/blur_img"
-            android:layout_width="400dp"
+            android:layout_width="match_parent"
             android:layout_height="400dp"
+            android:elevation="8dp"
+            android:outlineProvider="bounds"
+            android:layout_centerInParent="true"
             android:src="@drawable/default_art" />
-
-        <TextView
-            android:id="@+id/song_info_large"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="This is text"
-            android:singleLine="true"
-            android:ellipsize="marquee"
-            android:marqueeRepeatLimit="marquee_forever" />
 
         <ImageView
             android:id="@+id/rounded_img"
             android:layout_width="250dp"
             android:layout_height="250dp"
+            android:elevation="12dp"
+            android:outlineProvider="bounds"
             android:layout_centerInParent="true"
             android:src="@drawable/default_art" />
 
@@ -37,6 +35,8 @@
             android:id="@+id/circle_progress"
             android:layout_width="300dp"
             android:layout_height="300dp"
+            android:elevation="12dp"
+            android:outlineProvider="bounds"
             android:layout_centerInParent="true"
             app:timeTextSize="16sp"
             app:timeTextColor="@color/colorPrimaryDark"

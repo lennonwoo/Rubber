@@ -1,5 +1,6 @@
 package com.lennonwoo.rubber.ui.fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,11 +13,13 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lennonwoo.rubber.R;
@@ -59,17 +62,17 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     private SlidingUpPanelLayout slidingUpPanelLayout;
 
     @BindView(R.id.player_small)
-    LinearLayout playerSmall;
+    LinearLayout smallPanel;
     @BindView(R.id.song_art_small)
     ImageView songArtSmall;
     @BindView(R.id.song_info_small)
     TextView songInfoSmall;
     @BindView(R.id.play_stop)
     ImageView resumePause;
+    @BindView(R.id.song_art_layout)
+    RelativeLayout songArtLayout;
     @BindView(R.id.blur_img)
     ImageView blurImg;
-    @BindView(R.id.song_info_large)
-    TextView songInfoLarge;
     @BindView(R.id.rounded_img)
     ImageView roundedImg;
     @BindView(R.id.circle_progress)
@@ -84,6 +87,11 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         //TODO test next function
     }
 
+    //width and height
+    private int smallPanelHeight;
+    private int artHeight;
+
+
     private BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -95,10 +103,12 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
                     circleProgress.pause();
                     break;
                 case ACTION_UPDATE_FRAGMENT:
-                    if (slidingUpPanelLayout.isPanelHidden()) {
-                        slidingUpPanelLayout.collapsePanel();
-                    }
                     presenter.refreshView();
+                    if (slidingUpPanelLayout.isPanelHidden()) {
+                        //TODO why can't collapsePanel???
+//                        slidingUpPanelLayout.collapsePanel();
+                        slidingUpPanelLayout.expandPanel();
+                    }
                     break;
             }
         }
@@ -203,7 +213,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         //TODO change image more gently -- Picasso~~!!
         Picasso.with(context)
                 .load(new File(song.getArtPath()))
-                .resize(60, 60)
+                .resize(smallPanelHeight, smallPanelHeight)
                 .centerCrop()
                 .transform(new PaletteGeneratorTransformation(24))
                 .into(songArtSmall, new PaletteGeneratorTransformation.Callback(songArtSmall) {
@@ -231,6 +241,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
                 .into(roundedImg);
         Picasso.with(context)
                 .load(new File(song.getArtPath()))
+                .resize(artHeight, artHeight)
                 .transform(new BlurTransformation(context))
                 .into(blurImg);
         circleProgress
@@ -243,6 +254,40 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     }
 
     private void init() {
+        smallPanelHeight = getResources().getDimensionPixelSize(R.dimen.sliding_up_panel_bottom_height);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager()
+                            .getDefaultDisplay()
+                            .getMetrics(displayMetrics);
+        artHeight = displayMetrics.widthPixels;
+        songArtLayout.getLayoutParams().height = artHeight;
+        blurImg.getLayoutParams().height = artHeight;
+        //TODO view's elevation
         circleProgress.setSongOperation(this);
+        slidingUpPanelLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+                smallPanel.setAlpha(1 - slideOffset);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, smallPanelHeight);
+                params.topMargin = -(int) (smallPanelHeight * slideOffset);
+                smallPanel.setLayoutParams(params);
+            }
+
+            @Override
+            public void onPanelCollapsed(View panel) {
+            }
+
+            @Override
+            public void onPanelExpanded(View panel) {
+            }
+
+            @Override
+            public void onPanelAnchored(View panel) {
+            }
+
+            @Override
+            public void onPanelHidden(View panel) {
+            }
+        });
     }
 }
