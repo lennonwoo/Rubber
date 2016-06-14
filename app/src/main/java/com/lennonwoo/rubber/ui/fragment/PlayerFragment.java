@@ -37,7 +37,6 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -213,7 +212,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
 
     @Override
     public void setRecyclerItems(List<Song> playlist) {
-        adapter.setPlayList(new ArrayList<>(playlist));
+        adapter.setPlayList(playlist);
     }
 
     @Override

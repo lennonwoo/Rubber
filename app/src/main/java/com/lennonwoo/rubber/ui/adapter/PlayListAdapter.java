@@ -14,6 +14,7 @@ import com.lennonwoo.rubber.data.model.local.Song;
 import com.lennonwoo.rubber.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,7 +23,7 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.SongVi
 
     private Context context;
 
-    private ArrayList<Song> playList;
+    private List<Song> playList;
 
     public PlayListAdapter(Context context) {
         super();
@@ -49,7 +50,7 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.SongVi
         return playList.size();
     }
 
-    public void setPlayList(ArrayList<Song> playList) {
+    public void setPlayList(List<Song> playList) {
         this.playList = playList;
     }
 
