@@ -6,43 +6,47 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/song_art_layout"
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:outlineProvider="bounds"
-        android:elevation="4dp">
+        android:layout_height="wrap_content"
+        app:cardElevation="8dp">
 
-        <ImageView
-            android:id="@+id/blur_img"
+        <RelativeLayout
+            android:id="@+id/song_art_layout"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:elevation="8dp"
-            android:outlineProvider="bounds"
-            android:layout_centerInParent="true"
-            android:src="@drawable/default_art" />
+            android:layout_height="400dp">
 
-        <ImageView
-            android:id="@+id/rounded_img"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:elevation="12dp"
-            android:outlineProvider="bounds"
-            android:layout_centerInParent="true"
-            android:src="@drawable/default_art" />
+            <ImageView
+                android:id="@+id/blur_img"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/default_art" />
 
-        <com.lennonwoo.rubber.ui.widget.CircleProgressView
-            android:id="@+id/circle_progress"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:elevation="12dp"
-            android:outlineProvider="bounds"
-            android:layout_centerInParent="true"
-            app:timeTextSize="16sp"
-            app:timeTextColor="@color/colorPrimaryDark"
-            app:progressEmptyColor="@color/black"
-            app:progressLoadedColor="@color/colorPrimary" />
-    </RelativeLayout>
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/circular_img"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/default_art"
+                app:civ_border="false"
+                app:civ_shadow="true"
+                app:civ_shadow_radius="16"
+                app:civ_shadow_color="@color/black" />
+
+            <com.lennonwoo.rubber.ui.widget.CircularProgressView
+                android:id="@+id/circle_progress"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_centerInParent="true"
+                app:timeTextSize="16sp"
+                app:timeTextColor="@color/colorPrimaryDark"
+                app:progressEmptyColor="@color/black"
+                app:progressLoadedColor="@color/colorPrimary" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/coordinator_layout"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="CircleProgressView">
+    <declare-styleable name="CircularProgressView">
         <attr name="timeTextColor" format="color"/>
         <attr name="timeTextSize" format="dimension"/>
         <attr name="progressEmptyColor" format="color"/>

@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.graphics.Palette;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -26,21 +27,24 @@ import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.contract.PlayerContract;
 import com.lennonwoo.rubber.data.model.local.Song;
 import com.lennonwoo.rubber.service.PlayerService;
-import com.lennonwoo.rubber.ui.widget.CircleProgressView;
+import com.lennonwoo.rubber.ui.adapter.PlayListAdapter;
+import com.lennonwoo.rubber.ui.widget.CircularProgressView;
 import com.lennonwoo.rubber.ui.widget.slidinguppanel.SlidingUpPanelLayout;
 import com.lennonwoo.rubber.utils.BlurTransformation;
 import com.lennonwoo.rubber.utils.PaletteGeneratorTransformation;
 import com.lennonwoo.rubber.utils.RoundedTransformation;
+import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class PlayerFragment extends Fragment implements PlayerContract.View, CircleProgressView.SongOperation {
+public class PlayerFragment extends Fragment implements PlayerContract.View, CircularProgressView.SongOperation {
 
     public static final String TAG = PlayerFragment.class.getSimpleName();
 
@@ -73,10 +77,10 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     RelativeLayout songArtLayout;
     @BindView(R.id.blur_img)
     ImageView blurImg;
-    @BindView(R.id.rounded_img)
-    ImageView roundedImg;
+    @BindView(R.id.circular_img)
+    CircularImageView circularImg;
     @BindView(R.id.circle_progress)
-    CircleProgressView circleProgress;
+    CircularProgressView circularProgress;
     @BindView(R.id.playlist)
     RecyclerView playlist;
     @BindView(R.id.fab_more)
@@ -88,8 +92,12 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     }
 
     //width and height
-    private int smallPanelHeight;
-    private int artHeight;
+    private int smallPanelArtLength;
+    private int bigPanelArtLength;
+    private int circularImgDiam;
+    private int circularProgressDiam;
+
+    private PlayListAdapter adapter;
 
 
     private BroadcastReceiver br = new BroadcastReceiver() {
@@ -97,10 +105,10 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case ACTION_START:
-                    circleProgress.start();
+                    circularProgress.start();
                     break;
                 case ACTION_PAUSE:
-                    circleProgress.pause();
+                    circularProgress.pause();
                     break;
                 case ACTION_UPDATE_FRAGMENT:
                     presenter.refreshView();
@@ -205,7 +213,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
 
     @Override
     public void setRecyclerItems(List<Song> playlist) {
-        //TODO
+        adapter.setPlayList(new ArrayList<>(playlist));
     }
 
     @Override
@@ -213,38 +221,42 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         //TODO change image more gently -- Picasso~~!!
         Picasso.with(context)
                 .load(new File(song.getArtPath()))
-                .resize(smallPanelHeight, smallPanelHeight)
+                .resize(smallPanelArtLength, smallPanelArtLength)
                 .centerCrop()
                 .transform(new PaletteGeneratorTransformation(24))
                 .into(songArtSmall, new PaletteGeneratorTransformation.Callback(songArtSmall) {
                     @Override
                     public void onPalette(Palette palette) {
-                        circleProgress.setLoadedProgressColor(
+                        //TODO optimize color arrangement
+                            circularProgress.setLoadedProgressColor(
+                                        palette.getVibrantColor(context.getResources().getColor(R.color.colorAccent))
+                                );
+                            circularProgress.setEmptyProgressColor(
+                                        palette.getLightMutedColor(context.getResources().getColor(R.color.white))
+                                );
+                            fabMore.setBackgroundTintList(
+                                        ColorStateList.valueOf(palette.getVibrantColor(context.getResources().getColor(R.color.colorAccent)))
+                                );
+                            circularProgress.setTimeTextColor(
+                                        palette.getLightVibrantColor(context.getResources().getColor(R.color.colorPrimary))
+                                );
+                            circularImg.setShadowColor(
                                     palette.getVibrantColor(context.getResources().getColor(R.color.colorAccent))
-                            );
-                        circleProgress.setEmptyProgressColor(
-                                    palette.getLightMutedColor(context.getResources().getColor(R.color.white))
-                            );
-                        fabMore.setBackgroundTintList(
-                                    ColorStateList.valueOf(palette.getVibrantColor(context.getResources().getColor(R.color.colorAccent)))
-                            );
-                        circleProgress.setTimeTextColor(
-                                    palette.getLightVibrantColor(context.getResources().getColor(R.color.colorPrimary))
-                            );
+                                );
                         }
                     });
         Picasso.with(context)
                 .load(new File(song.getArtPath()))
-                .resize(250, 250)
+                .resize(circularImgDiam, circularImgDiam)
                 .centerCrop()
                 .transform(new RoundedTransformation(125))
-                .into(roundedImg);
+                .into(circularImg);
         Picasso.with(context)
                 .load(new File(song.getArtPath()))
-                .resize(artHeight, artHeight)
+                .resize(bigPanelArtLength, bigPanelArtLength)
                 .transform(new BlurTransformation(context))
                 .into(blurImg);
-        circleProgress
+        circularProgress
                 .setSongDuration(song.getDuration() / 1000)
                 .begin();
     }
@@ -254,22 +266,27 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     }
 
     private void init() {
-        smallPanelHeight = getResources().getDimensionPixelSize(R.dimen.sliding_up_panel_bottom_height);
+        smallPanelArtLength = getResources().getDimensionPixelSize(R.dimen.sliding_up_panel_bottom_height);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) context).getWindowManager()
                             .getDefaultDisplay()
                             .getMetrics(displayMetrics);
-        artHeight = displayMetrics.widthPixels;
-        songArtLayout.getLayoutParams().height = artHeight;
-        blurImg.getLayoutParams().height = artHeight;
-        //TODO view's elevation
-        circleProgress.setSongOperation(this);
+        bigPanelArtLength = displayMetrics.widthPixels;
+        circularImgDiam = (int) (bigPanelArtLength * 0.7);
+        circularProgressDiam = (int) (bigPanelArtLength * 0.75);
+        songArtLayout.getLayoutParams().height = bigPanelArtLength;
+        blurImg.getLayoutParams().height = bigPanelArtLength;
+        circularImg.getLayoutParams().height = circularImgDiam;
+        circularImg.getLayoutParams().width = circularImgDiam;
+        circularProgress.setSongOperation(this);
+        circularProgress.getLayoutParams().height = circularProgressDiam;
+        circularProgress.getLayoutParams().width = circularProgressDiam;
         slidingUpPanelLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
                 smallPanel.setAlpha(1 - slideOffset);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, smallPanelHeight);
-                params.topMargin = -(int) (smallPanelHeight * slideOffset);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, smallPanelArtLength);
+                params.topMargin = -(int) (smallPanelArtLength * slideOffset);
                 smallPanel.setLayoutParams(params);
             }
 
@@ -289,5 +306,8 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
             public void onPanelHidden(View panel) {
             }
         });
+        adapter = new PlayListAdapter(context);
+        playlist.setLayoutManager(new LinearLayoutManager(context));
+        playlist.setAdapter(adapter);
     }
 }

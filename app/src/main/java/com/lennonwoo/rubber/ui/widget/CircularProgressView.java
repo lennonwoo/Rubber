@@ -14,7 +14,7 @@ import android.view.View;
 import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.utils.Utils;
 
-public class CircleProgressView extends View {
+public class CircularProgressView extends View {
 
     private static final int PROGRESS_DELAY = 1000;
 
@@ -64,7 +64,7 @@ public class CircleProgressView extends View {
         }
     };
 
-    public CircleProgressView(Context context, AttributeSet attrs) {
+    public CircularProgressView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
     }
@@ -142,36 +142,36 @@ public class CircleProgressView extends View {
         return super.onTouchEvent(event);
     }
 
-    public CircleProgressView setSongOperation(SongOperation songOperation) {
+    public CircularProgressView setSongOperation(SongOperation songOperation) {
         this.songOperation = songOperation;
         return this;
     }
 
-    public CircleProgressView setTimeTextColor(int timeTextColor) {
+    public CircularProgressView setTimeTextColor(int timeTextColor) {
         //TODO remove useless local timeTextColor!
         this.timeTextColor = timeTextColor;
         paintTime.setColor(timeTextColor);
         return this;
     }
 
-    public CircleProgressView setEmptyProgressColor(int emptyProgressColor) {
+    public CircularProgressView setEmptyProgressColor(int emptyProgressColor) {
         this.emptyProgressColor = emptyProgressColor;
         paintEmptyProgress.setColor(emptyProgressColor);
         return this;
     }
 
-    public CircleProgressView setLoadedProgressColor(int loadedProgressColor) {
+    public CircularProgressView setLoadedProgressColor(int loadedProgressColor) {
         this.loadedProgressColor = loadedProgressColor;
         paintLoadedProgress.setColor(loadedProgressColor);
         return this;
     }
 
-    public CircleProgressView setSongDuration(int songDuration) {
+    public CircularProgressView setSongDuration(int songDuration) {
         this.songDuration = songDuration;
         return this;
     }
 
-    public CircleProgressView begin() {
+    public CircularProgressView begin() {
         if (newSong) {
             progressHandler.postDelayed(runnableProgress, PROGRESS_DELAY);
             newSong = false;
@@ -193,15 +193,15 @@ public class CircleProgressView extends View {
     private void init(Context context, AttributeSet attrs) {
         setWillNotDraw(false);
 
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.CircleProgressView);
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.CircularProgressView);
         //TODO -- getColor warning
-        timeTextColor = ta.getColor(R.styleable.CircleProgressView_timeTextColor,
+        timeTextColor = ta.getColor(R.styleable.CircularProgressView_timeTextColor,
                 getResources().getColor(R.color.black));
-        timeTextSize = ta.getDimensionPixelSize(R.styleable.CircleProgressView_timeTextSize,
+        timeTextSize = ta.getDimensionPixelSize(R.styleable.CircularProgressView_timeTextSize,
                 getResources().getDimensionPixelSize(R.dimen.circle_progress_text_size));
-        emptyProgressColor = ta.getColor(R.styleable.CircleProgressView_progressEmptyColor,
+        emptyProgressColor = ta.getColor(R.styleable.CircularProgressView_progressEmptyColor,
                 getResources().getColor(R.color.gray));
-        loadedProgressColor = ta.getColor(R.styleable.CircleProgressView_progressLoadedColor,
+        loadedProgressColor = ta.getColor(R.styleable.CircularProgressView_progressLoadedColor,
                 getResources().getColor(R.color.colorAccent));
         ta.recycle();
 
