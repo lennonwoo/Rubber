@@ -1,5 +1,7 @@
 package com.lennonwoo.rubber.ui.fragment;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
@@ -7,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.graphics.Palette;
@@ -16,6 +20,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -32,6 +37,7 @@ import com.lennonwoo.rubber.utils.BlurTransformation;
 import com.lennonwoo.rubber.utils.PaletteGeneratorTransformation;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.File;
 import java.util.List;
@@ -87,16 +93,19 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
 
     private PlayListAdapter adapter;
 
-
     private BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case ACTION_START:
                     circularProgress.start();
+                    rotateAnim.setFloatValues(circularImg.getRotation(), circularImg.getRotation() + 360f);
+                    rotateAnim.start();
                     break;
                 case ACTION_PAUSE:
                     circularProgress.pause();
+                    //TODO look xiaojian's blog then make my Interpolator
+                    rotateAnim.cancel();
                     break;
                 case ACTION_UPDATE_FRAGMENT:
                     presenter.refreshView();
@@ -107,6 +116,54 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
                     }
                     break;
             }
+        }
+    };
+
+    ObjectAnimator rotateAnim;
+
+    final Target blurImgTarget = new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            blurImg.setImageBitmap(bitmap);
+            ObjectAnimator alphaAnim = ObjectAnimator.ofFloat(blurImg, View.ALPHA, 0f, 1f);
+            alphaAnim.setDuration(1000);
+            alphaAnim.start();
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+            blurImg.setImageResource(R.drawable.default_art);
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+            //TODO animation of blurImg
+            ObjectAnimator alphaAnim = ObjectAnimator.ofFloat(blurImg, View.ALPHA, 1f, 0f);
+            alphaAnim.setDuration(1000);
+            alphaAnim.start();
+        }
+    };
+
+    final Target circularImgTarget = new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            circularImg.setImageBitmap(bitmap);
+            ObjectAnimator alphaAnim = ObjectAnimator.ofFloat(circularImg, View.ALPHA, 0f, 1f);
+            alphaAnim.setDuration(1000);
+            alphaAnim.start();
+            rotateAnim.start();
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+            circularImg.setImageResource(R.drawable.default_art);
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+            ObjectAnimator alphaAnim = ObjectAnimator.ofFloat(circularImg, "alpha", 1f, 0f);
+            alphaAnim.setDuration(1000);
+            alphaAnim.start();
         }
     };
 
@@ -195,7 +252,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     public void seekSong(int progress) {
         Intent intent = new Intent();
         intent.setAction(PlayerService.ACTION_SEEK_SONG);
-        intent.putExtra(PlayerService.SEEK_SONG_TO, progress);
+        intent.putExtra(PlayerService.SEEK_SONG_TO, progress * 1000);
         context.sendBroadcast(intent);
     }
 
@@ -234,16 +291,21 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
                 .load(new File(song.getArtPath()))
                 .resize(circularImgDiam, circularImgDiam)
                 .centerCrop()
-                .into(circularImg);
+                .into(circularImgTarget);
         Picasso.with(context)
                 .load(new File(song.getArtPath()))
                 .resize(bigPanelArtLength, bigPanelArtLength)
                 .transform(new BlurTransformation(context))
-                .into(blurImg);
+                .into(blurImgTarget);
+//        Glide.with(context)
+//                .load(new File(song.getArtPath()))
+//                .override(bigPanelArtLength, bigPanelArtLength)
+//                .into(blurImg);
         circularProgress
                 .setSongDuration(song.getDuration() / 1000)
                 .begin();
     }
+
 
     public void setSlidingUpPanelLayout(SlidingUpPanelLayout slidingUpPanelLayout) {
         this.slidingUpPanelLayout = slidingUpPanelLayout;
@@ -293,5 +355,10 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         adapter = new PlayListAdapter(context);
         playlist.setLayoutManager(new LinearLayoutManager(context));
         playlist.setAdapter(adapter);
+
+        rotateAnim = ObjectAnimator.ofFloat(circularImg, View.ROTATION, 0, 360f);
+        rotateAnim.setDuration(10000);
+        rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
+        rotateAnim.setInterpolator(new LinearInterpolator());
     }
 }

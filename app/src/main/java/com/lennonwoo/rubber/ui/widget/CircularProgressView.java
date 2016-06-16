@@ -95,16 +95,16 @@ public class CircularProgressView extends View {
                         (float) (240 * currentProgress * 1.0) / songDuration, false, paintLoadedProgress);
             }
 
-            String passedTime = Utils.durationToString(currentProgress );
-            paintTime.getTextBounds(passedTime, 0, passedTime.length(), rectText);
-            canvas.drawText(passedTime,
+            String leftTime = Utils.durationToString(songDuration - currentProgress);
+            paintTime.getTextBounds(leftTime, 0, leftTime.length(), rectText);
+            canvas.drawText(leftTime,
                     (float) (squareCenter * Math.cos(Math.toRadians(35.0))) + squareSide / 2.0f - rectText.width() / 1.5f,
                     (float) (squareCenter * Math.sin(Math.toRadians(35.0))) + squareSide / 2.0f + rectText.height() + 15.0f,
                     paintTime);
 
-            String leftTime = Utils.durationToString(songDuration - currentProgress);
-            paintTime.getTextBounds(leftTime, 0, leftTime.length(), rectText);
-            canvas.drawText(leftTime,
+            String passedTime = Utils.durationToString(currentProgress );
+            paintTime.getTextBounds(passedTime, 0, passedTime.length(), rectText);
+            canvas.drawText(passedTime,
                     (float) (squareCenter * -Math.cos(Math.toRadians(35.0))) + squareSide / 2.0f - rectText.width() / 3f,
                     (float) (squareCenter * Math.sin(Math.toRadians(35.0))) + squareSide / 2.0f + rectText.height() + 15.0f,
                     paintTime);
@@ -137,7 +137,7 @@ public class CircularProgressView extends View {
                 }
                 currentProgress = (int) ((d / 240) * songDuration);
                 songOperation.seekSong(currentProgress);
-                break;
+                return true;
         }
         return super.onTouchEvent(event);
     }

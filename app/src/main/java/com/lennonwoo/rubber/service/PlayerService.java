@@ -283,9 +283,6 @@ public class PlayerService extends Service {
         public void setPresenter(PlayerContract.Presenter playerPresenter) {
             presenter = playerPresenter;
         }
-        public void setActivityActive(boolean active) {
-
-        }
     }
 
 }
