@@ -30,7 +30,6 @@ import com.lennonwoo.rubber.ui.widget.CircularProgressView;
 import com.lennonwoo.rubber.ui.widget.slidinguppanel.SlidingUpPanelLayout;
 import com.lennonwoo.rubber.utils.BlurTransformation;
 import com.lennonwoo.rubber.utils.PaletteGeneratorTransformation;
-import com.lennonwoo.rubber.utils.RoundedTransformation;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -235,7 +234,6 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
                 .load(new File(song.getArtPath()))
                 .resize(circularImgDiam, circularImgDiam)
                 .centerCrop()
-                .transform(new RoundedTransformation(125))
                 .into(circularImg);
         Picasso.with(context)
                 .load(new File(song.getArtPath()))

@@ -14,8 +14,7 @@
         <ImageView
             android:id="@+id/song_art_small"
             android:layout_width="@dimen/sliding_up_panel_bottom_height"
-            android:layout_height="@dimen/sliding_up_panel_bottom_height"
-            android:src="@drawable/default_art" />
+            android:layout_height="@dimen/sliding_up_panel_bottom_height" />
 
         <TextView
             android:id="@+id/song_info_small"
