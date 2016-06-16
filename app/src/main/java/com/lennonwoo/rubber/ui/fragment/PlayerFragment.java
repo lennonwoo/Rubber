@@ -7,10 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,7 +39,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class PlayerFragment extends Fragment implements PlayerContract.View, CircularProgressView.SongOperation {
 
@@ -82,13 +79,6 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     CircularProgressView circularProgress;
     @BindView(R.id.playlist)
     RecyclerView playlist;
-    @BindView(R.id.fab_more)
-    FloatingActionButton fabMore;
-
-    @OnClick(R.id.fab_more)
-    void next() {
-        //TODO test next function
-    }
 
     //width and height
     private int smallPanelArtLength;
@@ -232,9 +222,6 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
                                 );
                             circularProgress.setEmptyProgressColor(
                                         palette.getLightMutedColor(context.getResources().getColor(R.color.white))
-                                );
-                            fabMore.setBackgroundTintList(
-                                        ColorStateList.valueOf(palette.getVibrantColor(context.getResources().getColor(R.color.colorAccent)))
                                 );
                             circularProgress.setTimeTextColor(
                                         palette.getLightVibrantColor(context.getResources().getColor(R.color.colorPrimary))

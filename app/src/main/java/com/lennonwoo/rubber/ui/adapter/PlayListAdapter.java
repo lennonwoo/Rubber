@@ -6,12 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.data.model.local.Song;
 import com.lennonwoo.rubber.utils.Utils;
+import com.like.LikeButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,8 +63,9 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.SongVi
         TextView songName;
         @BindView(R.id.song_artist)
         TextView songArtist;
-        @BindView(R.id.fav_img)
-        ImageView favImg;
+        //TODO listen music for some time to show this btn so that you are really like this music
+        @BindView(R.id.fav_btn)
+        LikeButton favBtn;
         @BindView(R.id.song_time)
         TextView songTime;
 
