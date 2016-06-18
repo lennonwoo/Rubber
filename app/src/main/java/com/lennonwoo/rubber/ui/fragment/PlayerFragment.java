@@ -20,6 +20,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.BounceInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -99,13 +100,21 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
             switch (intent.getAction()) {
                 case ACTION_START:
                     circularProgress.start();
-                    rotateAnim.setFloatValues(circularImg.getRotation(), circularImg.getRotation() + 360f);
+                    rotateAnim = ObjectAnimator.ofFloat(circularImg, View.ROTATION, 0, 360f);
+                    rotateAnim.setDuration(10000);
+                    rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
+                    rotateAnim.setInterpolator(new LinearInterpolator());
                     rotateAnim.start();
                     break;
                 case ACTION_PAUSE:
                     circularProgress.pause();
                     //TODO look xiaojian's blog then make my Interpolator
                     rotateAnim.cancel();
+                    rotateAnim.setInterpolator(new BounceInterpolator());
+                    rotateAnim.setFloatValues(circularImg.getRotation(), 0f);
+                    rotateAnim.setRepeatCount(0);
+                    rotateAnim.setDuration(3000);
+                    rotateAnim.start();
                     break;
                 case ACTION_UPDATE_FRAGMENT:
                     presenter.refreshView();
@@ -143,10 +152,17 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     final Target circularImgTarget = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            if (rotateAnim != null) {
+                rotateAnim.cancel();
+            }
             circularImg.setImageBitmap(bitmap);
             ObjectAnimator alphaAnim = ObjectAnimator.ofFloat(circularImg, View.ALPHA, 0f, 1f);
             alphaAnim.setDuration(4000);
             alphaAnim.start();
+            rotateAnim = ObjectAnimator.ofFloat(circularImg, View.ROTATION, 0, 360f);
+            rotateAnim.setDuration(10000);
+            rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
+            rotateAnim.setInterpolator(new LinearInterpolator());
             rotateAnim.start();
         }
 
@@ -349,9 +365,5 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         playlist.setLayoutManager(new LinearLayoutManager(context));
         playlist.setAdapter(adapter);
 
-        rotateAnim = ObjectAnimator.ofFloat(circularImg, View.ROTATION, 0, 360f);
-        rotateAnim.setDuration(10000);
-        rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
-        rotateAnim.setInterpolator(new LinearInterpolator());
     }
 }

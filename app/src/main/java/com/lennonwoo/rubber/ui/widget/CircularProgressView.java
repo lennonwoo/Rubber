@@ -182,6 +182,7 @@ public class CircularProgressView extends View {
     public void start() {
         bePlaying = true;
         progressHandler.postDelayed(runnableProgress, PROGRESS_DELAY);
+        invalidate();
     }
 
     public void pause() {

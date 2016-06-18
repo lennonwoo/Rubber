@@ -129,6 +129,13 @@ public class PlayerService extends Service {
                     break;
                 case ACTION_SEEK_SONG:
                     int seekTo = intent.getIntExtra(SEEK_SONG_TO, 0);
+                    if (!mediaPlayer.isPlaying()) {
+                        mediaPlayer.start();
+                        changeNotificationStatus(true);
+                        Intent start2 = new Intent();
+                        start2.setAction(PlayerFragment.ACTION_START);
+                        sendBroadcast(start2);
+                    }
                     mediaPlayer.seekTo(seekTo);
                 case ACTION_NOTI_CONTENT:
                     Intent showPanel;
@@ -182,6 +189,7 @@ public class PlayerService extends Service {
                     Toast.makeText(PlayerService.this, "This song can't be played", Toast.LENGTH_SHORT).show();
                 }
                 updateNotification(song);
+                changeNotificationStatus(true);
                 Intent updateFragment = new Intent();
                 updateFragment.setAction(PlayerFragment.ACTION_UPDATE_FRAGMENT);
                 sendBroadcast(updateFragment);
