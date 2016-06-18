@@ -125,8 +125,8 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
             blurImg.setImageBitmap(bitmap);
-            ObjectAnimator alphaAnim = ObjectAnimator.ofFloat(blurImg, View.ALPHA, 0f, 1f);
-            alphaAnim.setDuration(1000);
+            ObjectAnimator alphaAnim = ObjectAnimator.ofFloat(blurImg, View.ALPHA, 0.2f, 1f);
+            alphaAnim.setDuration(3000);
             alphaAnim.start();
         }
 
@@ -137,10 +137,6 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
 
         @Override
         public void onPrepareLoad(Drawable placeHolderDrawable) {
-            //TODO animation of blurImg
-            ObjectAnimator alphaAnim = ObjectAnimator.ofFloat(blurImg, View.ALPHA, 1f, 0f);
-            alphaAnim.setDuration(1000);
-            alphaAnim.start();
         }
     };
 
@@ -149,7 +145,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
             circularImg.setImageBitmap(bitmap);
             ObjectAnimator alphaAnim = ObjectAnimator.ofFloat(circularImg, View.ALPHA, 0f, 1f);
-            alphaAnim.setDuration(1000);
+            alphaAnim.setDuration(4000);
             alphaAnim.start();
             rotateAnim.start();
         }
@@ -161,9 +157,6 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
 
         @Override
         public void onPrepareLoad(Drawable placeHolderDrawable) {
-            ObjectAnimator alphaAnim = ObjectAnimator.ofFloat(circularImg, "alpha", 1f, 0f);
-            alphaAnim.setDuration(1000);
-            alphaAnim.start();
         }
     };
 

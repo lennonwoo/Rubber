@@ -152,6 +152,7 @@ public class PlayerService extends Service {
             if (anotherSong != null) {
                 cutOffSong(anotherSong);
                 updateNotification(anotherSong);
+                changeNotificationStatus(true);
                 /*
                 You can also just call presenter.refreshView() in this service
                 but　it's unnecessary to change view when PlayerFragment is invisible
