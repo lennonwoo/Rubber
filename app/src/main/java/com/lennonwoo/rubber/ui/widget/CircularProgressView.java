@@ -116,30 +116,28 @@ public class CircularProgressView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                float downX = event.getX();
-                float downY = event.getY();
-                float x = downX - squareCenter;
-                float y = downY - squareCenter;
-                Double d = Math.toDegrees(Math.atan2(y, x));
-                if (d >= -150 && d <= -30) {
-                    break;
-                } else if(d >= -180 && d <= -150) {
-                    d += 180;
-                    d = 30 - d;
-                } else if(d >= 0 && d <= 180) {
-                    d = 180 - d;
-                    d += 30;
-                } else {
-                    d = -d;
-                    d += 210;
-                }
-                currentProgress = (int) ((d / 240) * songDuration);
-                songOperation.seekSong(currentProgress);
-                return true;
+        //TODO may
+        float downX = event.getX();
+        float downY = event.getY();
+        float x = downX - squareCenter;
+        float y = -(downY - squareCenter);
+        Double d = Math.toDegrees(Math.atan2(y, x));
+        if (d >= -150 && d <= -30) {
+            return true;
+        } else if(d >= -180 && d <= -150) {
+            d += 180;
+            d = 30 - d;
+        } else if(d >= 0 && d <= 180) {
+            d = 180 - d;
+            d += 30;
+        } else {
+            d = -d;
+            d += 210;
         }
-        return super.onTouchEvent(event);
+        currentProgress = (int) ((d / 240) * songDuration);
+        invalidate();
+        songOperation.seekSong(currentProgress);
+        return true;
     }
 
     public CircularProgressView setSongOperation(SongOperation songOperation) {
