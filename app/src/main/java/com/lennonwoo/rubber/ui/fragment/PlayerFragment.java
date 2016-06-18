@@ -34,8 +34,8 @@ import com.lennonwoo.rubber.ui.adapter.PlayListAdapter;
 import com.lennonwoo.rubber.ui.widget.CircularProgressView;
 import com.lennonwoo.rubber.ui.widget.slidinguppanel.SlidingUpPanelLayout;
 import com.lennonwoo.rubber.utils.BlurTransformation;
-import com.lennonwoo.rubber.utils.EaseElasticOutInterpolator;
 import com.lennonwoo.rubber.utils.PaletteGeneratorTransformation;
+import com.lennonwoo.rubber.utils.StepResponseInterpolator;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -117,7 +117,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
                     }
                     rotateAnim.setRepeatCount(0);
                     rotateAnim.setDuration(3000);
-                    rotateAnim.setInterpolator(new EaseElasticOutInterpolator(3000));
+                    rotateAnim.setInterpolator(new StepResponseInterpolator());
                     rotateAnim.start();
                     break;
                 case ACTION_UPDATE_FRAGMENT:
