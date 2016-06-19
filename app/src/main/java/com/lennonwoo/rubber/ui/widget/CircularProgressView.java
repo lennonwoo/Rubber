@@ -1,5 +1,6 @@
 package com.lennonwoo.rubber.ui.widget;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -146,15 +147,23 @@ public class CircularProgressView extends View {
     }
 
     public CircularProgressView setTimeTextColor(int timeTextColor) {
-        //TODO remove useless local timeTextColor!
         this.timeTextColor = timeTextColor;
         paintTime.setColor(timeTextColor);
         return this;
     }
 
-    public CircularProgressView setEmptyProgressColor(int emptyProgressColor) {
-        this.emptyProgressColor = emptyProgressColor;
-        paintEmptyProgress.setColor(emptyProgressColor);
+    public CircularProgressView setEmptyProgressColor(int color) {
+        ValueAnimator emptyProgressColorAnim = ValueAnimator.ofArgb(this.emptyProgressColor, color);
+        emptyProgressColorAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                emptyProgressColor = (int) animation.getAnimatedValue();
+                paintEmptyProgress.setColor(emptyProgressColor);
+                invalidate();
+            }
+        });
+        emptyProgressColorAnim.setDuration(1000);
+        emptyProgressColorAnim.start();
         return this;
     }
 

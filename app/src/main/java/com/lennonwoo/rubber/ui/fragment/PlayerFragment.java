@@ -310,10 +310,6 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
                 .resize(bigPanelArtLength, bigPanelArtLength)
                 .transform(new BlurTransformation(context))
                 .into(blurImgTarget);
-//        Glide.with(context)
-//                .load(new File(song.getArtPath()))
-//                .override(bigPanelArtLength, bigPanelArtLength)
-//                .into(blurImg);
         circularProgress
                 .setSongDuration(song.getDuration() / 1000)
                 .begin();
