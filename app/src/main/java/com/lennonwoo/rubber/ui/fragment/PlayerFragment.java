@@ -361,7 +361,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
             public void onPanelHidden(View panel) {
             }
         });
-        adapter = new PlayListAdapter(context);
+        adapter = new PlayListAdapter(context, presenter);
         playlist.setLayoutManager(new LinearLayoutManager(context));
         playlist.setAdapter(adapter);
 

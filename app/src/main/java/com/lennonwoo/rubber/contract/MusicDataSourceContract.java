@@ -21,6 +21,10 @@ public interface MusicDataSourceContract {
 
     Observable<List<Song>> getPlaylist(PlaylistType type);
 
+    void saveFavSong(long songId);
+
+    void deleteFavSong(long songId);
+
     void refreshRepository();
 
     interface LocalDataSource {
@@ -30,6 +34,10 @@ public interface MusicDataSourceContract {
         Observable<List<Album>> getAlbumList();
 
         Observable<List<Fav>> getFavList();
+
+        void saveFavSong(long songId);
+
+        void deleteFavSong(long songId);
 
     }
 

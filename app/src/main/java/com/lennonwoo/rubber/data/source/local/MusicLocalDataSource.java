@@ -1,5 +1,6 @@
 package com.lennonwoo.rubber.data.source.local;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -83,6 +84,21 @@ public class MusicLocalDataSource implements MusicDataSourceContract.LocalDataSo
             cursor.close();
         }
         return Observable.from(favList).toList();
+    }
+
+    @Override
+    public void saveFavSong(long songId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(MusicDbPersistenceContract.FavDb.COLUMN_NAME_SONG_ID, songId);
+        db.insert(MusicDbPersistenceContract.FavDb.TABLE_NAME, null, values);
+    }
+
+    @Override
+    public void deleteFavSong(long songId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String where = MusicDbPersistenceContract.FavDb.COLUMN_NAME_SONG_ID + " = ?";
+        db.delete(MusicDbPersistenceContract.FavDb.TABLE_NAME, where, new String[]{"" + songId});
     }
 
     private Song getSongFromCursor(Cursor cursor) {

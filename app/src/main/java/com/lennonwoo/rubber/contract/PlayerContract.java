@@ -40,6 +40,10 @@ public interface PlayerContract {
 
         PlayType getPlayType();
 
+        void saveFavSong(long songId);
+
+        void deleteFavSong(long songId);
+
     }
 
 }

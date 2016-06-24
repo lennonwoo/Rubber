@@ -58,6 +58,7 @@ public class PlayerPresenter implements PlayerContract.Presenter {
     @Override
     public void loadFavPlaylist(final int position) {
         mSubscriptions.clear();
+        mMusicRepository.refreshRepository();
         Subscription subscription =
                 mMusicRepository.getPlaylist(MusicDataSourceContract.PlaylistType.FAV)
                 .subscribeOn(Schedulers.io())
@@ -144,6 +145,16 @@ public class PlayerPresenter implements PlayerContract.Presenter {
     @Override
     public PlayerContract.PlayType getPlayType() {
         return playType;
+    }
+
+    @Override
+    public void saveFavSong(long songId) {
+        mMusicRepository.saveFavSong(songId);
+    }
+
+    @Override
+    public void deleteFavSong(long songId) {
+        mMusicRepository.deleteFavSong(songId);
     }
 
     private void updatePlaylist(List<Song> songs, int position) {

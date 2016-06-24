@@ -30,6 +30,7 @@ public class Song {
         dataAdded = date_added;
         path = _data;
         artPath = null;
+        //TODO judge by favorite song list to change favBtn's status
         fav = false;
     }
 

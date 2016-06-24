@@ -55,11 +55,11 @@ public class CircularProgressView extends View {
             if (!bePlaying) {
                 return;
             }
-            currentProgress++;
             if (currentProgress >= songDuration) {
                 newSong = true;
                 return;
             }
+            currentProgress++;
             postInvalidate();
             progressHandler.postDelayed(runnableProgress, PROGRESS_DELAY);
         }

@@ -2,13 +2,13 @@ package com.lennonwoo.rubber.ui.fragment;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.contract.SongListContract;
 import com.lennonwoo.rubber.data.model.local.Song;
+import com.lennonwoo.rubber.service.PlayerService;
 import com.lennonwoo.rubber.ui.adapter.SongListAdapter;
 
 import java.util.List;
@@ -35,12 +36,15 @@ public class SongListFragment extends Fragment implements SongListContract.View 
     RelativeLayout emptyLayout;
     @BindView(R.id.songs_list)
     RecyclerView songsList;
-    @BindView(R.id.fab_shuffle)
-    FloatingActionButton fabShuffle;
+    @BindView(R.id.fab_fav)
+    FloatingActionButton fabFav;
 
-    @OnClick(R.id.fab_shuffle)
-    void shuffle() {
-        Log.d(TAG, "fab shuffle clicked");
+    @OnClick(R.id.fab_fav)
+    void fav() {
+        Intent intent = new Intent();
+        intent.setAction(PlayerService.ACTION_CHANGE_PLAYLIST_FAV);
+        intent.putExtra(PlayerService.SONG_POSITION, 0);
+        getActivity().sendBroadcast(intent);
     }
 
     private SongListContract.Presenter presenter;

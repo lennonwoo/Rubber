@@ -9,9 +9,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.lennonwoo.rubber.R;
+import com.lennonwoo.rubber.contract.PlayerContract;
 import com.lennonwoo.rubber.data.model.local.Song;
 import com.lennonwoo.rubber.utils.Utils;
 import com.like.LikeButton;
+import com.like.OnLikeListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +27,12 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.SongVi
 
     private List<Song> playList;
 
-    public PlayListAdapter(Context context) {
+    private PlayerContract.Presenter presenter;
+
+    public PlayListAdapter(Context context, PlayerContract.Presenter presenter) {
         super();
         this.context = context;
+        this.presenter = presenter;
         playList = new ArrayList<>();
     }
 
@@ -38,11 +43,24 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.SongVi
     }
 
     @Override
-    public void onBindViewHolder(SongViewHolder holder, int position) {
+    public void onBindViewHolder(final SongViewHolder holder, int position) {
         holder.songName.setText(playList.get(position).getName());
         holder.songArtist.setText(playList.get(position).getArtist());
         holder.songTime.setText(Utils.durationToString(
                 playList.get(position).getDuration() / 1000));
+        holder.favBtn.setOnLikeListener(new OnLikeListener() {
+            @Override
+            public void liked(LikeButton likeButton) {
+                long songId = playList.get(holder.getAdapterPosition()).getSongId();
+                presenter.saveFavSong(songId);
+            }
+
+            @Override
+            public void unLiked(LikeButton likeButton) {
+                long songId = playList.get(holder.getAdapterPosition()).getSongId();
+                presenter.deleteFavSong(songId);
+            }
+        });
     }
 
     @Override

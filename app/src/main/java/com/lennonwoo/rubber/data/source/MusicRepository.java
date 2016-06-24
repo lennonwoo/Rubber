@@ -103,6 +103,16 @@ public class MusicRepository implements MusicDataSourceContract{
     }
 
     @Override
+    public void saveFavSong(long songId) {
+        mLocalDataSource.saveFavSong(songId);
+    }
+
+    @Override
+    public void deleteFavSong(long songId) {
+        mLocalDataSource.deleteFavSong(songId);
+    }
+
+    @Override
     public void refreshRepository() {
         cacheIsDirty = true;
     }
