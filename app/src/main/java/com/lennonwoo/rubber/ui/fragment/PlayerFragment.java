@@ -53,6 +53,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     public static final String ACTION_START = "com.lennonwoo.fragment.begin";
     public static final String ACTION_PAUSE = "com.lennonwoo.fragment.pause";
     public static final String ACTION_UPDATE_FRAGMENT = "com.lennonwoo.fragment.updateFragment";
+    public static final String ACTION_UPDATE_SONG_POSITION = "com.lennonwoo.fragment.updateSongPosition";
 
     //preference static string
     private static final String MUSIC_PREFERENCE = "music_preference";
@@ -60,6 +61,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     private static final String SHUFFLE = "shuffle";
     private static final String REPEAT_SINGLE = "repeat single";
     private static final String REPEAT_ALL = "repeat all";
+
 
     private Context context;
 
@@ -127,6 +129,10 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
 //                        slidingUpPanelLayout.collapsePanel();
                         slidingUpPanelLayout.expandPanel();
                     }
+                    break;
+                case ACTION_UPDATE_SONG_POSITION:
+                    int songPosition = intent.getIntExtra(PlayerService.SONG_POSITION, 0);
+                    circularProgress.setSongPosition(songPosition / 1000);
                     break;
             }
         }
@@ -215,8 +221,13 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         filter.addAction(ACTION_START);
         filter.addAction(ACTION_PAUSE);
         filter.addAction(ACTION_UPDATE_FRAGMENT);
+        filter.addAction(ACTION_UPDATE_SONG_POSITION);
         context.registerReceiver(br, filter);
         presenter.subscribe();
+
+        Intent intent = new Intent();
+        intent.setAction(PlayerService.ACTION_PLAY_FRAGMENT_RESUME);
+        getActivity().sendBroadcast(intent);
     }
 
     @Override

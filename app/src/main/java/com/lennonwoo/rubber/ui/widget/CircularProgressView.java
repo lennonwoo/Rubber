@@ -178,6 +178,10 @@ public class CircularProgressView extends View {
         return this;
     }
 
+    public void setSongPosition(int songPosition) {
+        this.currentProgress = songPosition;
+    }
+
     public CircularProgressView begin() {
         if (newSong) {
             progressHandler.postDelayed(runnableProgress, PROGRESS_DELAY);

@@ -37,6 +37,7 @@ public class PlayerService extends Service {
     public static final String ACTION_SEEK_SONG = "com.lennonwoo.service.seekSong";
     public static final String ACTION_NOTI_CONTENT = "com.lennon.service.notificationClick";
     public static final String ACTION_NOTI_DELETE = "com.lennon.service.notificationDelete";
+    public static final String ACTION_PLAY_FRAGMENT_RESUME = "com.lennonwoo.service.playFragmentResume";
 
     public static final String SONG_POSITION = "songPosition";
     public static final String SEEK_SONG_TO = "seekSongTo";
@@ -74,6 +75,7 @@ public class PlayerService extends Service {
         filter.addAction(ACTION_SEEK_SONG);
         filter.addAction(ACTION_NOTI_CONTENT);
         filter.addAction(ACTION_NOTI_DELETE);
+        filter.addAction(ACTION_PLAY_FRAGMENT_RESUME);
         registerReceiver(br, filter);
         mediaPlayer = new MediaPlayer();
         return mBinder;
@@ -154,6 +156,13 @@ public class PlayerService extends Service {
                 case ACTION_NOTI_DELETE:
                     mediaPlayer.stop();
                     notificationManager.cancel(NOTIFICATION_ID);
+                    break;
+                case ACTION_PLAY_FRAGMENT_RESUME:
+                    int songPosition = mediaPlayer.getCurrentPosition();
+                    Intent refreshPlayTime = new Intent();
+                    refreshPlayTime.setAction(PlayerFragment.ACTION_UPDATE_SONG_POSITION);
+                    refreshPlayTime.putExtra(SONG_POSITION, songPosition);
+                    sendBroadcast(refreshPlayTime);
                     break;
             }
             if (anotherSong != null) {
