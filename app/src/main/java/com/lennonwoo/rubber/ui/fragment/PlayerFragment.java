@@ -110,7 +110,6 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
                     break;
                 case ACTION_PAUSE:
                     circularProgress.pause();
-                    //TODO look xiaojian's blog then make my Interpolator
                     rotateAnim.cancel();
                     if (circularImg.getRotation() > 180f) {
                         rotateAnim.setFloatValues(circularImg.getRotation(), 360f);
@@ -125,8 +124,6 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
                 case ACTION_UPDATE_FRAGMENT:
                     presenter.refreshView();
                     if (slidingUpPanelLayout.isPanelHidden()) {
-                        //TODO why can't collapsePanel???
-//                        slidingUpPanelLayout.collapsePanel();
                         slidingUpPanelLayout.expandPanel();
                     }
                     break;
@@ -287,7 +284,6 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
 
     @Override
     public void setPlayingSongInfo(Song song) {
-        //TODO change image more gently -- Picasso~~!!
         Picasso.with(context)
                 .load(new File(song.getArtPath()))
                 .resize(smallPanelArtLength, smallPanelArtLength)
@@ -296,7 +292,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
                 .into(songArtSmall, new PaletteGeneratorTransformation.Callback(songArtSmall) {
                     @Override
                     public void onPalette(Palette palette) {
-                        //TODO optimize color arrangement
+                        //TODO getColor warning!
                             circularProgress.setLoadedProgressColor(
                                         palette.getVibrantColor(context.getResources().getColor(R.color.colorAccent))
                                 );

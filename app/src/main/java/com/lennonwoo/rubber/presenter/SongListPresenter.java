@@ -64,12 +64,10 @@ public class SongListPresenter implements SongListContract.Presenter {
                 .subscribe(new Observer<List<Song>>() {
                     @Override
                     public void onCompleted() {
-                        //TODO
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        //TODO
                     }
 
                     @Override

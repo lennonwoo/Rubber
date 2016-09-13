@@ -12,7 +12,6 @@ import android.graphics.drawable.Drawable;
 public class BitmapHelper {
 
     public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
-        //TODO understand this method
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
 
@@ -20,12 +19,11 @@ public class BitmapHelper {
         final Paint paint = new Paint();
         final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         final RectF rectF = new RectF(rect);
-        final float roundPx = pixels;
 
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(color);
-        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+        canvas.drawRoundRect(rectF, pixels, pixels, paint);
 
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);

@@ -9,7 +9,6 @@ public class MusicRemoteDataSource implements MusicDataSourceContract.RemoteData
     private static MusicRemoteDataSource INSTANCE;
 
     private MusicRemoteDataSource(Context context) {
-        //TODO
     }
 
     public static MusicRemoteDataSource getInstace(Context context) {

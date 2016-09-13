@@ -81,7 +81,6 @@ public class MusicRepository implements MusicDataSourceContract{
                             .flatMap(new Func1<List<Fav>, Observable<Song>>() {
                                 @Override
                                 public Observable<Song> call(List<Fav> favs) {
-                                    // TODO it seem can have simple logical code here!!!
                                     playlistCache.clear();
                                     for (Fav fav : favs) {
                                         playlistCache.add(songMap.get(fav.getSongId()));

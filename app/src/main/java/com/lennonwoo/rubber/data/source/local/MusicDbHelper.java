@@ -39,7 +39,6 @@ public class MusicDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //TODO if db upgrade
     }
 
 }

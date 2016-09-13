@@ -117,7 +117,6 @@ public class CircularProgressView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //TODO may
         float downX = event.getX();
         float downY = event.getY();
         float x = downX - squareCenter;
