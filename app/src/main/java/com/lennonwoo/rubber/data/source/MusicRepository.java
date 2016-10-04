@@ -77,6 +77,7 @@ public class MusicRepository implements MusicDataSourceContract{
                     playlistCache = songListCache;
                     return Observable.from(playlistCache).toList();
                 case FAV:
+                    //TODO change Observable<Song> to Observable<List<Song>>
                     return mLocalDataSource.getFavList()
                             .flatMap(new Func1<List<Fav>, Observable<Song>>() {
                                 @Override
@@ -120,6 +121,7 @@ public class MusicRepository implements MusicDataSourceContract{
         albumArtMap = new HashMap<>();
         songMap = new HashMap<>();
         cacheIsDirty = true;
+        //TODO try subscribe on io() failed *then observe on mainThread()* 
         mLocalDataSource.getAlbumList()
                 .subscribe(new Action1<List<Album>>() {
                     @Override
