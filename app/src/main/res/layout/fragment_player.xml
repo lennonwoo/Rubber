@@ -14,23 +14,23 @@
         <ImageView
             android:id="@+id/song_art_small"
             android:layout_width="@dimen/sliding_up_panel_bottom_height"
-            android:layout_height="@dimen/sliding_up_panel_bottom_height" />
+            android:layout_height="@dimen/sliding_up_panel_bottom_height"/>
 
         <TextView
             android:id="@+id/song_info_small"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:singleLine="true"
+            android:layout_weight="1"
             android:ellipsize="marquee"
-            android:marqueeRepeatLimit="marquee_forever" />
+            android:marqueeRepeatLimit="marquee_forever"
+            android:padding="10dp"
+            android:singleLine="true"/>
 
         <ImageView
             android:id="@+id/play_stop"
-            android:padding="10dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:padding="10dp"/>
 
     </LinearLayout>
 
@@ -39,7 +39,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/merge_player_large" />
+        <include layout="@layout/merge_player_large"/>
     </LinearLayout>
 
 </LinearLayout>

@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout 
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
     android:background="@color/colorPrimary"
+    android:orientation="horizontal"
     android:padding="10dp">
-    
+
     <ImageView
         android:id="@+id/notification_album_art"
-        android:src="@drawable/default_art"
         android:layout_width="50dp"
-        android:layout_height="50dp"/>
+        android:layout_height="50dp"
+        android:src="@drawable/default_art"/>
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="match_parent"
         android:layout_marginStart="10dp"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textColor="@color/white"
-            android:textSize="17sp" />
+            android:textSize="17sp"/>
 
         <TextView
             android:id="@+id/notification_song_artist"
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textColor="@color/white"
-            android:textSize="17sp" />
+            android:textSize="17sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -46,22 +46,22 @@
             android:id="@+id/notification_prev_song"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_skip_previous_white_36dp"
-            android:layout_marginStart="10dp" />
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_skip_previous_white_36dp"/>
 
         <ImageView
             android:id="@+id/notification_play_pause_song"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_pause_white_36dp"
-            android:layout_marginStart="10dp" />
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_pause_white_36dp"/>
 
         <ImageView
             android:id="@+id/notification_next_song"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_skip_next_white_36dp"
-            android:layout_marginStart="10dp" />
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_skip_next_white_36dp"/>
 
     </LinearLayout>
 

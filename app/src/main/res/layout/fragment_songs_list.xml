@@ -24,9 +24,9 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
             android:src="@drawable/ic_add"
+            app:layout_anchor="@id/songs_list"
             app:layout_anchorGravity="bottom|end|right"
-            app:layout_behavior="com.lennonwoo.rubber.utils.FABScrollHideBehavior"
-            app:layout_anchor="@id/songs_list" />
+            app:layout_behavior="com.lennonwoo.rubber.utils.FABScrollHideBehavior"/>
     </android.support.design.widget.CoordinatorLayout>
 
     <RelativeLayout
@@ -45,12 +45,10 @@
             android:src="@mipmap/ic_launcher"/>
 
         <TextView
-            android:layout_below="@+id/pity_img"
-            android:text="@string/empty_songs_list_hint"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/pity_img"
+            android:text="@string/empty_songs_list_hint"/>
     </RelativeLayout>
 
 </LinearLayout>
-
-

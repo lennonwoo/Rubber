@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
+    android:background="@color/colorPrimary"
     android:orientation="horizontal"
-    android:background="@color/colorPrimary">
+    android:padding="10dp">
 
     <ImageView
         android:id="@+id/notification_album_art"
@@ -27,7 +27,7 @@
             android:gravity="center_horizontal"
             android:singleLine="true"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="16sp"/>
 
         <TextView
             android:id="@+id/notification_song_artist"
@@ -37,7 +37,7 @@
             android:gravity="center_horizontal"
             android:singleLine="true"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="16sp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -49,25 +49,25 @@
                 android:id="@+id/notification_prev_song"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
-                android:src="@drawable/ic_skip_previous_white_36dp"
-                android:layout_marginStart="10dp" />
+                android:src="@drawable/ic_skip_previous_white_36dp"/>
 
             <ImageView
                 android:id="@+id/notification_play_pause_song"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
-                android:src="@drawable/ic_pause_white_36dp"
-                android:layout_marginStart="10dp" />
+                android:src="@drawable/ic_pause_white_36dp"/>
 
             <ImageView
                 android:id="@+id/notification_next_song"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
-                android:src="@drawable/ic_skip_next_white_36dp"
-                android:layout_marginStart="10dp" />
+                android:src="@drawable/ic_skip_next_white_36dp"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
