@@ -41,6 +41,7 @@ public class MusicLocalDataSource implements MusicDataSourceContract.LocalDataSo
         String where = MediaStore.Audio.Media.IS_MUSIC + "=1";
         Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 null, where, null, null);
+        // reuse code??
         List<Song> songs = new ArrayList<>();
         if (cursor != null) {
             if (cursor.moveToFirst()) {

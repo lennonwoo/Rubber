@@ -37,11 +37,11 @@ public class CircularProgressView extends View {
 
     private boolean newSong;
 
-    private RectF rectCircle;
+    private RectF rectMusicProgressCircle;
 
-    private Rect rectText;
+    private Rect rectTimeText;
 
-    private float squareSide, squareCenter;
+    private float squareSideLength, squareCenter;
 
     private int currentProgress;
 
@@ -75,10 +75,10 @@ public class CircularProgressView extends View {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
 
-        squareSide = Math.min(width, height);
-        squareCenter = squareSide / 2;
+        squareSideLength = Math.min(width, height);
+        squareCenter = squareSideLength / 2;
 
-        rectCircle.set(SPACING, SPACING, squareSide - SPACING, squareSide - SPACING);
+        rectMusicProgressCircle.set(SPACING, SPACING, squareSideLength - SPACING, squareSideLength - SPACING);
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
@@ -87,27 +87,27 @@ public class CircularProgressView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (bePlaying || firstDraw) {
-            canvas.drawArc(rectCircle, 150, 240, false, paintEmptyProgress);
+            canvas.drawArc(rectMusicProgressCircle, 150, 240, false, paintEmptyProgress);
             if (currentProgress == 0) {
-                canvas.drawArc(rectCircle, 150,
+                canvas.drawArc(rectMusicProgressCircle, 150,
                         (float) (0.0001), false, paintEmptyProgress);
             } else {
-                canvas.drawArc(rectCircle, 150,
+                canvas.drawArc(rectMusicProgressCircle, 150,
                         (float) (240 * currentProgress * 1.0) / songDuration, false, paintLoadedProgress);
             }
 
             String leftTime = Utils.durationToString(songDuration - currentProgress);
-            paintTime.getTextBounds(leftTime, 0, leftTime.length(), rectText);
+            paintTime.getTextBounds(leftTime, 0, leftTime.length(), rectTimeText);
             canvas.drawText(leftTime,
-                    (float) (squareCenter * Math.cos(Math.toRadians(35.0))) + squareSide / 2.0f - rectText.width() / 1.5f,
-                    (float) (squareCenter * Math.sin(Math.toRadians(35.0))) + squareSide / 2.0f + rectText.height() + 15.0f,
+                    (float) (squareCenter * Math.cos(Math.toRadians(35.0))) + squareSideLength / 2.0f - rectTimeText.width() / 1.5f,
+                    (float) (squareCenter * Math.sin(Math.toRadians(35.0))) + squareSideLength / 2.0f + rectTimeText.height() + 15.0f,
                     paintTime);
 
             String passedTime = Utils.durationToString(currentProgress );
-            paintTime.getTextBounds(passedTime, 0, passedTime.length(), rectText);
+            paintTime.getTextBounds(passedTime, 0, passedTime.length(), rectTimeText);
             canvas.drawText(passedTime,
-                    (float) (squareCenter * -Math.cos(Math.toRadians(35.0))) + squareSide / 2.0f - rectText.width() / 3f,
-                    (float) (squareCenter * Math.sin(Math.toRadians(35.0))) + squareSide / 2.0f + rectText.height() + 15.0f,
+                    (float) (squareCenter * -Math.cos(Math.toRadians(35.0))) + squareSideLength / 2.0f - rectTimeText.width() / 3f,
+                    (float) (squareCenter * Math.sin(Math.toRadians(35.0))) + squareSideLength / 2.0f + rectTimeText.height() + 15.0f,
                     paintTime);
         }
         if (firstDraw) {
@@ -218,8 +218,8 @@ public class CircularProgressView extends View {
 
         initPaint();
 
-        rectCircle = new RectF();
-        rectText = new Rect();
+        rectMusicProgressCircle = new RectF();
+        rectTimeText = new Rect();
 
         progressHandler = new Handler();
 

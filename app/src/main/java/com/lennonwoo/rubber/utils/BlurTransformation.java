@@ -32,7 +32,7 @@ public class BlurTransformation implements Transformation {
         script.setInput(input);
 
         // 设置模糊半径
-        script.setRadius(10);
+        script.setRadius(15);
 
         //开始操作
         script.forEach(output);
