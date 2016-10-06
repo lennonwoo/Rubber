@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.lennonwoo.rubber.R;
-import com.lennonwoo.rubber.contract.PlayerContract;
+import com.lennonwoo.rubber.contract.SongContract;
 import com.lennonwoo.rubber.data.model.local.Song;
 import com.lennonwoo.rubber.utils.Utils;
 import com.like.LikeButton;
@@ -28,9 +28,9 @@ public class SongfactListAdapter extends RecyclerView.Adapter<SongfactListAdapte
 
     private List<Song> factList;
 
-    private PlayerContract.Presenter presenter;
+    private SongContract.Presenter presenter;
 
-    public SongfactListAdapter(Context context, PlayerContract.Presenter presenter) {
+    public SongfactListAdapter(Context context, SongContract.Presenter presenter) {
         super();
         this.context = context;
         this.presenter = presenter;

@@ -27,7 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.lennonwoo.rubber.R;
-import com.lennonwoo.rubber.contract.PlayerContract;
+import com.lennonwoo.rubber.contract.SongContract;
 import com.lennonwoo.rubber.data.model.local.Song;
 import com.lennonwoo.rubber.service.PlayerService;
 import com.lennonwoo.rubber.ui.adapter.SongfactListAdapter;
@@ -47,7 +47,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PlayerFragment extends Fragment implements PlayerContract.View, CircularProgressView.SongOperation {
+public class PlayerFragment extends Fragment implements SongContract.PlayerView, CircularProgressView.SongOperation {
 
     public static final String TAG = PlayerFragment.class.getSimpleName();
 
@@ -64,7 +64,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
 
     private Context context;
 
-    private PlayerContract.Presenter presenter;
+    private SongContract.Presenter presenter;
 
     private SlidingUpPanelLayout slidingUpPanelLayout;
 
@@ -200,13 +200,13 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         String playType = preferences.getString(PLAY_TYPE, SHUFFLE);
         switch (playType) {
             case SHUFFLE:
-                presenter.setPlayType(PlayerContract.PlayType.SHUFFLE);
+                presenter.setPlayType(SongContract.PlayType.SHUFFLE);
                 break;
             case REPEAT_SINGLE:
-                presenter.setPlayType(PlayerContract.PlayType.REPEAT_SINGLE);
+                presenter.setPlayType(SongContract.PlayType.REPEAT_SINGLE);
                 break;
             case REPEAT_ALL:
-                presenter.setPlayType(PlayerContract.PlayType.REPEAT_ALL);
+                presenter.setPlayType(SongContract.PlayType.REPEAT_ALL);
                 break;
         }
     }
@@ -237,7 +237,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     @Override
     public void onStop() {
         super.onStop();
-        PlayerContract.PlayType playType = presenter.getPlayType();
+        SongContract.PlayType playType = presenter.getPlayType();
         SharedPreferences.Editor editor =
                 context.getSharedPreferences(MUSIC_PREFERENCE, Context.MODE_PRIVATE).edit();
         switch (playType) {
@@ -258,7 +258,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     }
 
     @Override
-    public void setPresenter(PlayerContract.Presenter presenter) {
+    public void setPresenter(SongContract.Presenter presenter) {
         this.presenter = presenter;
     }
 

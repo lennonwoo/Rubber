@@ -1,7 +1,7 @@
 package com.lennonwoo.rubber.presenter;
 
 import com.lennonwoo.rubber.contract.MusicDataSourceContract;
-import com.lennonwoo.rubber.contract.PlayerContract;
+import com.lennonwoo.rubber.contract.SongContract;
 import com.lennonwoo.rubber.data.model.local.Song;
 
 import java.util.List;
@@ -13,9 +13,10 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class PlayerPresenter implements PlayerContract.Presenter {
+public class SongPresenter implements SongContract.Presenter {
 
-    private PlayerContract.View view;
+    private SongContract.PlayerView playerView;
+    private SongContract.SongListView songListView;
 
     private MusicDataSourceContract mMusicRepository;
 
@@ -25,17 +26,19 @@ public class PlayerPresenter implements PlayerContract.Presenter {
 
     private int playingSongIndex;
 
-    private PlayerContract.PlayType playType;
+    private SongContract.PlayType playType;
 
     private Random rand;
 
     private boolean haveLoaded;
 
-    public PlayerPresenter(PlayerContract.View playerView, MusicDataSourceContract musicRepository) {
-        view = playerView;
+    public SongPresenter(SongContract.SongListView songListView, SongContract.PlayerView playerView, MusicDataSourceContract musicRepository) {
+        this.playerView = playerView;
+        this.songListView = songListView;
         mMusicRepository = musicRepository;
         mSubscriptions = new CompositeSubscription();
-        view.setPresenter(this);
+        this.playerView.setPresenter(this);
+        this.songListView.setPresenter(this);
         playingSongIndex = 0;
         rand = new Random();
     }
@@ -44,6 +47,7 @@ public class PlayerPresenter implements PlayerContract.Presenter {
     public void subscribe() {
         if (!haveLoaded) {
             mMusicRepository.refreshRepository();
+            loadPlaylist();
         } else {
             refreshView();
         }
@@ -55,7 +59,7 @@ public class PlayerPresenter implements PlayerContract.Presenter {
     }
 
     @Override
-    public void loadFavPlaylist(final int position) {
+    public void loadTagedPlaylist() {
         mSubscriptions.clear();
         mMusicRepository.refreshRepository();
         Subscription subscription =
@@ -65,15 +69,15 @@ public class PlayerPresenter implements PlayerContract.Presenter {
                 .subscribe(new Action1<List<Song>>() {
                     @Override
                     public void call(List<Song> songs) {
-                        updatePlaylist(songs, position);
-                        view.changeSong();
+                        updatePlaylist(songs);
+                        playingSongIndex = 1;
                     }
                 });
         mSubscriptions.add(subscription);
     }
 
     @Override
-    public void loadAllPlaylist(final int position) {
+    public void loadPlaylist() {
         mSubscriptions.clear();
         Subscription subscription =
                 mMusicRepository.getPlaylist(MusicDataSourceContract.PlaylistType.ALL)
@@ -82,8 +86,8 @@ public class PlayerPresenter implements PlayerContract.Presenter {
                 .subscribe(new Action1<List<Song>>() {
                     @Override
                     public void call(List<Song> songs) {
-                        updatePlaylist(songs, position);
-                        view.changeSong();
+                        updatePlaylist(songs);
+                        playingSongIndex = 1;
                     }
                 });
         mSubscriptions.add(subscription);
@@ -91,13 +95,14 @@ public class PlayerPresenter implements PlayerContract.Presenter {
 
     @Override
     public void refreshView() {
-        view.setRecyclerItems(currentSongList);
-        view.setPlayingSongInfo(currentSongList.get(playingSongIndex));
+        playerView.setRecyclerItems(currentSongList);
+        playerView.setPlayingSongInfo(currentSongList.get(playingSongIndex));
     }
 
     @Override
-    public Song getCurrentPlayingSong() {
-        return currentSongList.get(playingSongIndex);
+    public Song getChangedSong(int position) {
+        playingSongIndex = position;
+        return getCurrentPlayingSong();
     }
 
     @Override
@@ -137,12 +142,12 @@ public class PlayerPresenter implements PlayerContract.Presenter {
     }
 
     @Override
-    public void setPlayType(PlayerContract.PlayType playType) {
+    public void setPlayType(SongContract.PlayType playType) {
         this.playType = playType;
     }
 
     @Override
-    public PlayerContract.PlayType getPlayType() {
+    public SongContract.PlayType getPlayType() {
         return playType;
     }
 
@@ -156,10 +161,18 @@ public class PlayerPresenter implements PlayerContract.Presenter {
         mMusicRepository.deleteFavSong(songId);
     }
 
-    private void updatePlaylist(List<Song> songs, int position) {
+    private void updatePlaylist(List<Song> songs) {
         currentSongList = songs;
-        playingSongIndex = position;
         haveLoaded = true;
+       if (songs.size() == 0) {
+            songListView.showEmptyLayout();
+        } else {
+            songListView.setRecyclerItems(songs);
+        }
+    }
+
+    private Song getCurrentPlayingSong() {
+        return currentSongList.get(playingSongIndex);
     }
 
 }

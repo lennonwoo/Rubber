@@ -63,7 +63,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.setAction(PlayerService.ACTION_CHANGE_PLAYLIST_ALL);
+                intent.setAction(PlayerService.ACTION_CHANGE_SONG);
                 intent.putExtra(PlayerService.SONG_POSITION, holder.getAdapterPosition());
                 context.sendBroadcast(intent);
             }

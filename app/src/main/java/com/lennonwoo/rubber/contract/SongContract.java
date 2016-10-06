@@ -6,31 +6,39 @@ import com.lennonwoo.rubber.data.model.local.Song;
 
 import java.util.List;
 
-public interface PlayerContract {
+public interface SongContract {
 
     enum PlayType {
         SHUFFLE, REPEAT_SINGLE, REPEAT_ALL
     }
 
-    interface View extends BaseView<Presenter> {
+    interface PlayerView extends BaseView<Presenter> {
 
         void setPlayingSongInfo(Song currentSong);
 
-        void setRecyclerItems(List<Song> playlist);
+        void setRecyclerItems(List<Song> factList);
 
         void changeSong();
 
     }
 
+    interface SongListView extends BaseView<Presenter> {
+
+        void showEmptyLayout();
+
+        void setRecyclerItems(List<Song> songsList);
+
+    }
+
     interface Presenter extends BasePresenter {
 
-        void loadFavPlaylist(int position);
+        void loadTagedPlaylist();
 
-        void loadAllPlaylist(int position);
+        void loadPlaylist();
 
         void refreshView();
 
-        Song getCurrentPlayingSong();
+        Song getChangedSong(int position);
 
         Song getPrevSong();
 

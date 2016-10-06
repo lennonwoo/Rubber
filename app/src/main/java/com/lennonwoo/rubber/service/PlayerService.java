@@ -16,7 +16,7 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.lennonwoo.rubber.R;
-import com.lennonwoo.rubber.contract.PlayerContract;
+import com.lennonwoo.rubber.contract.SongContract;
 import com.lennonwoo.rubber.data.model.local.Song;
 import com.lennonwoo.rubber.ui.activity.MainActivity;
 import com.lennonwoo.rubber.ui.fragment.PlayerFragment;
@@ -28,7 +28,7 @@ import java.io.IOException;
 public class PlayerService extends Service {
 
     public static final String ACTION_CHANGE_PLAYLIST_ALL = "com.lennonwoo.service.changeListAll";
-    public static final String ACTION_CHANGE_PLAYLIST_FAV = "com.lennonwoo.service.changeListFav";
+    public static final String ACTION_CHANGE_PLAYLIST_TAG = "com.lennonwoo.service.changeListFav";
     public static final String ACTION_CHANGE_SONG = "com.lennonwoo.service.changeSong";
     public static final String ACTION_NEXT_SONG = "com.lennonwoo.service.nextSong";
     public static final String ACTION_PREV_SONG = "com.lennonwoo.service.previousSong";
@@ -49,7 +49,7 @@ public class PlayerService extends Service {
     //This is used to bind presenter
     private MyBinder mBinder = new MyBinder();
 
-    private PlayerContract.Presenter presenter;
+    private SongContract.Presenter presenter;
 
 
     private Notification notification;
@@ -67,7 +67,7 @@ public class PlayerService extends Service {
     public IBinder onBind(Intent intent) {
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_CHANGE_PLAYLIST_ALL);
-        filter.addAction(ACTION_CHANGE_PLAYLIST_FAV);
+        filter.addAction(ACTION_CHANGE_PLAYLIST_TAG);
         filter.addAction(ACTION_CHANGE_SONG);
         filter.addAction(ACTION_NEXT_SONG);
         filter.addAction(ACTION_PREV_SONG);
@@ -100,16 +100,15 @@ public class PlayerService extends Service {
             Song anotherSong = null;
             switch (intent.getAction()) {
                 case ACTION_CHANGE_PLAYLIST_ALL:
-                    int positionAll = intent.getIntExtra(SONG_POSITION, 0);
-                    presenter.loadAllPlaylist(positionAll);
+                    presenter.loadPlaylist();
                     break;
                 // TODO change for tag
-                case ACTION_CHANGE_PLAYLIST_FAV:
-                    int positionFav = intent.getIntExtra(SONG_POSITION, 0);
-                    presenter.loadFavPlaylist(positionFav);
+                case ACTION_CHANGE_PLAYLIST_TAG:
+                    presenter.loadTagedPlaylist();
                     break;
                 case ACTION_CHANGE_SONG:
-                    anotherSong = presenter.getCurrentPlayingSong();
+                    int changePosition = intent.getIntExtra(SONG_POSITION, 0);
+                    anotherSong = presenter.getChangedSong(changePosition);
                     break;
                 case ACTION_PREV_SONG:
                     anotherSong = presenter.getPrevSong();
@@ -289,7 +288,7 @@ public class PlayerService extends Service {
     }
 
     public class MyBinder extends Binder {
-        public void setPresenter(PlayerContract.Presenter playerPresenter) {
+        public void setPresenter(SongContract.Presenter playerPresenter) {
             presenter = playerPresenter;
         }
     }

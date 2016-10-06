@@ -24,8 +24,7 @@ import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.data.source.MusicRepository;
 import com.lennonwoo.rubber.data.source.local.MusicLocalDataSource;
 import com.lennonwoo.rubber.data.source.remote.MusicRemoteDataSource;
-import com.lennonwoo.rubber.presenter.PlayerPresenter;
-import com.lennonwoo.rubber.presenter.SongListPresenter;
+import com.lennonwoo.rubber.presenter.SongPresenter;
 import com.lennonwoo.rubber.service.PlayerService;
 import com.lennonwoo.rubber.ui.fragment.PlayerFragment;
 import com.lennonwoo.rubber.ui.fragment.SongListFragment;
@@ -50,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     private PermissionChecker checker;
 
-    private  PlayerPresenter playerPresenter;
+    private SongPresenter songPresenter;
 
     private ServiceConnection connection;
 
@@ -148,14 +147,13 @@ public class MainActivity extends AppCompatActivity {
         MusicRepository musicRepository = MusicRepository.getInstance(
                 MusicLocalDataSource.getInstance(this), MusicRemoteDataSource.getInstace(this));
         // mvp's bind
-        new SongListPresenter(songListFragment, musicRepository);
-        playerPresenter = new PlayerPresenter(playerFragment, musicRepository);
+        songPresenter = new SongPresenter(songListFragment, playerFragment, musicRepository);
 
         bindService(new Intent(this, PlayerService.class), connection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 PlayerService.MyBinder binder = (PlayerService.MyBinder) service;
-                binder.setPresenter(playerPresenter);
+                binder.setPresenter(songPresenter);
             }
 
             @Override

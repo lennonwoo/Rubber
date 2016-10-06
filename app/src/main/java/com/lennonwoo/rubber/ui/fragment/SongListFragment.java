@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.lennonwoo.rubber.R;
-import com.lennonwoo.rubber.contract.SongListContract;
+import com.lennonwoo.rubber.contract.SongContract;
 import com.lennonwoo.rubber.data.model.local.Song;
 import com.lennonwoo.rubber.service.PlayerService;
 import com.lennonwoo.rubber.ui.adapter.SongListAdapter;
@@ -26,7 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SongListFragment extends Fragment implements SongListContract.View {
+public class SongListFragment extends Fragment implements SongContract.SongListView {
 
     public static final String TAG = SongListFragment.class.getSimpleName();
 
@@ -39,15 +39,16 @@ public class SongListFragment extends Fragment implements SongListContract.View 
     @BindView(R.id.fab_fav)
     FloatingActionButton fabFav;
 
+
     @OnClick(R.id.fab_fav)
     void fav() {
         Intent intent = new Intent();
-        intent.setAction(PlayerService.ACTION_CHANGE_PLAYLIST_FAV);
+        intent.setAction(PlayerService.ACTION_CHANGE_PLAYLIST_TAG);
         intent.putExtra(PlayerService.SONG_POSITION, 0);
         getActivity().sendBroadcast(intent);
     }
 
-    private SongListContract.Presenter presenter;
+    private SongContract.Presenter presenter;
     private SongListAdapter adapter;
 
     @Nullable
@@ -71,16 +72,8 @@ public class SongListFragment extends Fragment implements SongListContract.View 
         presenter.unsubscribe();
     }
 
-    private void init() {
-        Context context = getActivity();
-        adapter = new SongListAdapter(context);
-        songsList.setAdapter(adapter);
-        songsList.setLayoutManager(new LinearLayoutManager(context));
-        showEmptyLayout();
-    }
-
     @Override
-    public void setPresenter(SongListContract.Presenter presenter) {
+    public void setPresenter(SongContract.Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -94,5 +87,13 @@ public class SongListFragment extends Fragment implements SongListContract.View 
         adapter.setSongList(songsList);
         coordinatorLayout.setVisibility(View.VISIBLE);
         emptyLayout.setVisibility(View.GONE);
+    }
+
+    private void init() {
+        Context context = getActivity();
+        adapter = new SongListAdapter(context);
+        songsList.setAdapter(adapter);
+        songsList.setLayoutManager(new LinearLayoutManager(context));
+        showEmptyLayout();
     }
 }
