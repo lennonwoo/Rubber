@@ -32,7 +32,7 @@ public class PlayerService extends Service {
     public static final String ACTION_CHANGE_SONG = "com.lennonwoo.service.changeSong";
     public static final String ACTION_NEXT_SONG = "com.lennonwoo.service.nextSong";
     public static final String ACTION_PREV_SONG = "com.lennonwoo.service.previousSong";
-    public static final String ACTION_START = "com.lennonwoo.service.begin";
+    public static final String ACTION_START = "com.lennonwoo.service.start";
     public static final String ACTION_PAUSE = "com.lennonwoo.service.pause";
     public static final String ACTION_SEEK_SONG = "com.lennonwoo.service.seekSong";
     public static final String ACTION_NOTI_CONTENT = "com.lennon.service.notificationClick";
@@ -118,37 +118,39 @@ public class PlayerService extends Service {
                 case ACTION_START:
                     mediaPlayer.start();
                     changeNotificationStatus(true);
-                    Intent start = new Intent();
-                    start.setAction(PlayerFragment.ACTION_START);
-                    sendBroadcast(start);
+//                    Intent start = new Intent();
+//                    start.setAction(PlayerFragment.ACTION_START);
+//                    sendBroadcast(start);
                     break;
                 case ACTION_PAUSE:
                     mediaPlayer.pause();
                     changeNotificationStatus(false);
-                    Intent pause = new Intent();
-                    pause.setAction(PlayerFragment.ACTION_PAUSE);
-                    sendBroadcast(pause);
+//                    Intent pause = new Intent();
+//                    pause.setAction(PlayerFragment.ACTION_PAUSE);
+//                    sendBroadcast(pause);
                     break;
                 case ACTION_SEEK_SONG:
                     int seekTo = intent.getIntExtra(SEEK_SONG_TO, 0);
                     if (!mediaPlayer.isPlaying()) {
-                        mediaPlayer.start();
-                        changeNotificationStatus(true);
-                        Intent start2 = new Intent();
-                        start2.setAction(PlayerFragment.ACTION_START);
-                        sendBroadcast(start2);
+                        Intent start = new Intent(ACTION_START);
+                        sendBroadcast(start);
+//                        mediaPlayer.start();
+//                        changeNotificationStatus(true);
+//                        Intent start2 = new Intent();
+//                        start2.setAction(PlayerFragment.ACTION_START);
+//                        sendBroadcast(start2);
                     }
                     mediaPlayer.seekTo(seekTo);
                 case ACTION_NOTI_CONTENT:
-                    Intent showPanel;
+                    Intent showApp;
                     if (MainActivity.active) {
-                        showPanel = new Intent();
-                        showPanel.setAction(MainActivity.ACTION_SHOW_PANEL);
-                        sendBroadcast(showPanel);
+                        showApp = new Intent();
+                        showApp.setAction(MainActivity.ACTION_SHOW_PANEL);
+                        sendBroadcast(showApp);
                     } else {
-                        showPanel = new Intent(this, MainActivity.class);
-                        showPanel.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        startActivity(showPanel);
+                        showApp = new Intent(this, MainActivity.class);
+                        showApp.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        startActivity(showApp);
                     }
                     break;
                 case ACTION_NOTI_DELETE:

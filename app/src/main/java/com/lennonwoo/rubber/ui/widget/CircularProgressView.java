@@ -49,6 +49,8 @@ public class CircularProgressView extends View {
 
     private SongOperation songOperation;
 
+    private int touchFlag;
+
     private Runnable runnableProgress = new Runnable() {
         @Override
         public void run() {
@@ -120,7 +122,12 @@ public class CircularProgressView extends View {
         float y = -(downY - squareCenter);
         Double d = Math.toDegrees(Math.atan2(y, x));
         if (d >= -150 && d <= -30) {
-            // change there to add start/pause answer
+            // TODO try to move this ugly touchFlag and figure out why onTouchEvent will be called twice??
+            touchFlag++;
+            if (touchFlag == 2) {
+                songOperation.startPauseSong();
+                touchFlag = 0;
+            }
             return true;
         } else if(d >= -180 && d <= -150) {
             d += 180;
@@ -250,6 +257,8 @@ public class CircularProgressView extends View {
     public interface SongOperation {
 
         void seekSong(int progress);
+
+        void startPauseSong();
 
     }
 }

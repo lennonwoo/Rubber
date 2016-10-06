@@ -51,8 +51,8 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
 
     public static final String TAG = PlayerFragment.class.getSimpleName();
 
-    public static final String ACTION_START = "com.lennonwoo.fragment.begin";
-    public static final String ACTION_PAUSE = "com.lennonwoo.fragment.pause";
+//    public static final String ACTION_START = "com.lennonwoo.fragment.begin";
+//    public static final String ACTION_PAUSE = "com.lennonwoo.fragment.pause";
     public static final String ACTION_UPDATE_FRAGMENT = "com.lennonwoo.fragment.updateFragment";
     public static final String ACTION_UPDATE_SONG_POSITION = "com.lennonwoo.fragment.updateSongPosition";
 
@@ -94,22 +94,25 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     private int bigPanelArtLength;
     private int circularImgDiam;
     private int circularProgressDiam;
+    private boolean bePlaying;
 
     private SongfactListAdapter adapter;
+
 
     private BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
-                case ACTION_START:
+                case PlayerService.ACTION_START:
                     circularProgress.start();
                     rotateAnim = ObjectAnimator.ofFloat(circularImg, View.ROTATION, 0, 360f);
                     rotateAnim.setDuration(10000);
                     rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
                     rotateAnim.setInterpolator(new LinearInterpolator());
                     rotateAnim.start();
+                    bePlaying = true;
                     break;
-                case ACTION_PAUSE:
+                case PlayerService.ACTION_PAUSE:
                     circularProgress.pause();
                     rotateAnim.cancel();
                     if (circularImg.getRotation() > 180f) {
@@ -121,6 +124,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
                     rotateAnim.setDuration(3000);
                     rotateAnim.setInterpolator(new StepResponseInterpolator());
                     rotateAnim.start();
+                    bePlaying = false;
                     break;
                 case ACTION_UPDATE_FRAGMENT:
                     presenter.refreshView();
@@ -216,8 +220,8 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     public void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION_START);
-        filter.addAction(ACTION_PAUSE);
+        filter.addAction(PlayerService.ACTION_START);
+        filter.addAction(PlayerService.ACTION_PAUSE);
         filter.addAction(ACTION_UPDATE_FRAGMENT);
         filter.addAction(ACTION_UPDATE_SONG_POSITION);
         context.registerReceiver(br, filter);
@@ -279,8 +283,19 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     }
 
     @Override
-    public void setRecyclerItems(List<Song> playlist) {
-        adapter.setPlayList(playlist);
+    public void startPauseSong() {
+        Intent startPause = new Intent();
+        if (bePlaying) {
+            startPause.setAction(PlayerService.ACTION_PAUSE);
+        } else {
+            startPause.setAction(PlayerService.ACTION_START);
+        }
+        context.sendBroadcast(startPause);
+    }
+
+    @Override
+    public void setRecyclerItems(List<Song> factList) {
+        adapter.setFactList(factList);
     }
 
     @Override
@@ -343,6 +358,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         circularProgress.setSongOperation(this);
         circularProgress.getLayoutParams().height = circularProgressDiam;
         circularProgress.getLayoutParams().width = circularProgressDiam;
+        bePlaying = false;
         slidingUpPanelLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {

@@ -26,7 +26,7 @@ public class SongfactListAdapter extends RecyclerView.Adapter<SongfactListAdapte
 
     private Context context;
 
-    private List<Song> playList;
+    private List<Song> factList;
 
     private PlayerContract.Presenter presenter;
 
@@ -34,7 +34,7 @@ public class SongfactListAdapter extends RecyclerView.Adapter<SongfactListAdapte
         super();
         this.context = context;
         this.presenter = presenter;
-        playList = new ArrayList<>();
+        factList = new ArrayList<>();
     }
 
     @Override
@@ -45,20 +45,20 @@ public class SongfactListAdapter extends RecyclerView.Adapter<SongfactListAdapte
 
     @Override
     public void onBindViewHolder(final SongViewHolder holder, int position) {
-        holder.songName.setText(playList.get(position).getName());
-        holder.songArtist.setText(playList.get(position).getArtist());
+        holder.songName.setText(factList.get(position).getName());
+        holder.songArtist.setText(factList.get(position).getArtist());
         holder.songTime.setText(Utils.durationToString(
-                playList.get(position).getDuration() / 1000));
+                factList.get(position).getDuration() / 1000));
         holder.favBtn.setOnLikeListener(new OnLikeListener() {
             @Override
             public void liked(LikeButton likeButton) {
-                long songId = playList.get(holder.getAdapterPosition()).getSongId();
+                long songId = factList.get(holder.getAdapterPosition()).getSongId();
                 presenter.saveFavSong(songId);
             }
 
             @Override
             public void unLiked(LikeButton likeButton) {
-                long songId = playList.get(holder.getAdapterPosition()).getSongId();
+                long songId = factList.get(holder.getAdapterPosition()).getSongId();
                 presenter.deleteFavSong(songId);
             }
         });
@@ -66,11 +66,11 @@ public class SongfactListAdapter extends RecyclerView.Adapter<SongfactListAdapte
 
     @Override
     public int getItemCount() {
-        return playList.size();
+        return factList.size();
     }
 
-    public void setPlayList(List<Song> playList) {
-        this.playList = playList;
+    public void setFactList(List<Song> factList) {
+        this.factList = factList;
     }
 
 
