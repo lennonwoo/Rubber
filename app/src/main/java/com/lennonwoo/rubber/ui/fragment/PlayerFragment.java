@@ -17,7 +17,6 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,7 +92,6 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     private int bigPanelArtLength;
     private int circularImgDiam;
     private int circularProgressDiam;
-    private boolean bePlaying;
 
     private SongfactListAdapter adapter;
 
@@ -103,8 +101,6 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case PlayerService.ACTION_START:
-                    Log.d(TAG, "action start");
-                    bePlaying = true;
                     circularProgress.start();
                     rotateAnim = ObjectAnimator.ofFloat(circularImg, View.ROTATION, 0, 360f);
                     rotateAnim.setDuration(10000);
@@ -113,8 +109,6 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
                     rotateAnim.start();
                     break;
                 case PlayerService.ACTION_PAUSE:
-                    Log.d(TAG, "action stop");
-                    bePlaying = false;
                     circularProgress.pause();
                     rotateAnim.cancel();
                     if (circularImg.getRotation() > 180f) {
@@ -285,9 +279,8 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
 
     @Override
     public void startPauseSong() {
-        Log.d(TAG, "method startPauseSong");
         Intent startPause = new Intent();
-        if (bePlaying) {
+        if (PlayerService.mediaPlayer.isPlaying()) {
             startPause.setAction(PlayerService.ACTION_PAUSE);
         } else {
             startPause.setAction(PlayerService.ACTION_START);
@@ -360,7 +353,6 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         circularProgress.setSongOperation(this);
         circularProgress.getLayoutParams().height = circularProgressDiam;
         circularProgress.getLayoutParams().width = circularProgressDiam;
-        bePlaying = true;
         slidingUpPanelLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {

@@ -42,6 +42,8 @@ public class PlayerService extends Service {
     public static final String SONG_POSITION = "songPosition";
     public static final String SEEK_SONG_TO = "seekSongTo";
 
+    public static MediaPlayer mediaPlayer;
+
     private static final int NOTIFICATION_ID = 325018;
 
     //This is used to bind presenter
@@ -49,7 +51,6 @@ public class PlayerService extends Service {
 
     private PlayerContract.Presenter presenter;
 
-    private MediaPlayer mediaPlayer;
 
     private Notification notification;
     private NotificationManager notificationManager;
@@ -102,6 +103,7 @@ public class PlayerService extends Service {
                     int positionAll = intent.getIntExtra(SONG_POSITION, 0);
                     presenter.loadAllPlaylist(positionAll);
                     break;
+                // TODO change for tag
                 case ACTION_CHANGE_PLAYLIST_FAV:
                     int positionFav = intent.getIntExtra(SONG_POSITION, 0);
                     presenter.loadFavPlaylist(positionFav);
