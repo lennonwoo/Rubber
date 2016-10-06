@@ -39,7 +39,7 @@ public class SongfactListAdapter extends RecyclerView.Adapter<SongfactListAdapte
 
     @Override
     public SongViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.cardview_play_list, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.cardview_fact_list, parent, false);
         return new SongViewHolder(view);
     }
 
@@ -76,7 +76,7 @@ public class SongfactListAdapter extends RecyclerView.Adapter<SongfactListAdapte
 
     public class SongViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.song_card)
+        @BindView(R.id.fact_card)
         CardView songCard;
         @BindView(R.id.song_name)
         TextView songName;

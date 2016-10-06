@@ -17,6 +17,7 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,8 +52,6 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
 
     public static final String TAG = PlayerFragment.class.getSimpleName();
 
-//    public static final String ACTION_START = "com.lennonwoo.fragment.begin";
-//    public static final String ACTION_PAUSE = "com.lennonwoo.fragment.pause";
     public static final String ACTION_UPDATE_FRAGMENT = "com.lennonwoo.fragment.updateFragment";
     public static final String ACTION_UPDATE_SONG_POSITION = "com.lennonwoo.fragment.updateSongPosition";
 
@@ -104,15 +103,18 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case PlayerService.ACTION_START:
+                    Log.d(TAG, "action start");
+                    bePlaying = true;
                     circularProgress.start();
                     rotateAnim = ObjectAnimator.ofFloat(circularImg, View.ROTATION, 0, 360f);
                     rotateAnim.setDuration(10000);
                     rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
                     rotateAnim.setInterpolator(new LinearInterpolator());
                     rotateAnim.start();
-                    bePlaying = true;
                     break;
                 case PlayerService.ACTION_PAUSE:
+                    Log.d(TAG, "action stop");
+                    bePlaying = false;
                     circularProgress.pause();
                     rotateAnim.cancel();
                     if (circularImg.getRotation() > 180f) {
@@ -124,7 +126,6 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
                     rotateAnim.setDuration(3000);
                     rotateAnim.setInterpolator(new StepResponseInterpolator());
                     rotateAnim.start();
-                    bePlaying = false;
                     break;
                 case ACTION_UPDATE_FRAGMENT:
                     presenter.refreshView();
@@ -284,6 +285,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
 
     @Override
     public void startPauseSong() {
+        Log.d(TAG, "method startPauseSong");
         Intent startPause = new Intent();
         if (bePlaying) {
             startPause.setAction(PlayerService.ACTION_PAUSE);
@@ -358,7 +360,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
         circularProgress.setSongOperation(this);
         circularProgress.getLayoutParams().height = circularProgressDiam;
         circularProgress.getLayoutParams().width = circularProgressDiam;
-        bePlaying = false;
+        bePlaying = true;
         slidingUpPanelLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {

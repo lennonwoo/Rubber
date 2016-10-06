@@ -118,27 +118,16 @@ public class PlayerService extends Service {
                 case ACTION_START:
                     mediaPlayer.start();
                     changeNotificationStatus(true);
-//                    Intent start = new Intent();
-//                    start.setAction(PlayerFragment.ACTION_START);
-//                    sendBroadcast(start);
                     break;
                 case ACTION_PAUSE:
                     mediaPlayer.pause();
                     changeNotificationStatus(false);
-//                    Intent pause = new Intent();
-//                    pause.setAction(PlayerFragment.ACTION_PAUSE);
-//                    sendBroadcast(pause);
                     break;
                 case ACTION_SEEK_SONG:
                     int seekTo = intent.getIntExtra(SEEK_SONG_TO, 0);
                     if (!mediaPlayer.isPlaying()) {
                         Intent start = new Intent(ACTION_START);
                         sendBroadcast(start);
-//                        mediaPlayer.start();
-//                        changeNotificationStatus(true);
-//                        Intent start2 = new Intent();
-//                        start2.setAction(PlayerFragment.ACTION_START);
-//                        sendBroadcast(start2);
                     }
                     mediaPlayer.seekTo(seekTo);
                 case ACTION_NOTI_CONTENT:

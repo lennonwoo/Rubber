@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -122,6 +123,7 @@ public class CircularProgressView extends View {
         float y = -(downY - squareCenter);
         Double d = Math.toDegrees(Math.atan2(y, x));
         if (d >= -150 && d <= -30) {
+            Log.d("test", "onTouchEvent entered");
             // TODO try to move this ugly touchFlag and figure out why onTouchEvent will be called twice??
             touchFlag++;
             if (touchFlag == 2) {
