@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Toast;
 
 import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.data.source.MusicRepository;
@@ -37,8 +38,6 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
 
     public static final String ACTION_SHOW_PANEL = "com.lennonwoo.showPanel";
-
-    public static final String EXPAND_PANEL = "openPanel";
 
     public static boolean active;
 
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checker = new PermissionChecker(this, drawerLayout);
+            checker = new PermissionChecker(this);
             checker.check(Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 new PermissionChecker.OnPermissionResponse() {
                     @Override
@@ -84,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onDecline() {
+                        Toast.makeText(MainActivity.this, "Sorry, we need this permission or the app won's word", Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 });
@@ -173,11 +173,6 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.main_content_panel, playerFragment)
                 .commit();
 
-        if (getIntent().getBooleanExtra(EXPAND_PANEL, false)) {
-            slidingUpPanelLayout.expandPanel();
-        } else {
-            slidingUpPanelLayout.hidePanel();
-        }
     }
 
     @Override

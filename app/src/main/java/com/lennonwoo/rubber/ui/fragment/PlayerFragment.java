@@ -30,12 +30,13 @@ import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.contract.PlayerContract;
 import com.lennonwoo.rubber.data.model.local.Song;
 import com.lennonwoo.rubber.service.PlayerService;
-import com.lennonwoo.rubber.ui.adapter.PlayListAdapter;
+import com.lennonwoo.rubber.ui.adapter.SongfactListAdapter;
 import com.lennonwoo.rubber.ui.widget.CircularProgressView;
 import com.lennonwoo.rubber.ui.widget.slidinguppanel.SlidingUpPanelLayout;
 import com.lennonwoo.rubber.utils.BlurTransformation;
 import com.lennonwoo.rubber.utils.PaletteGeneratorTransformation;
 import com.lennonwoo.rubber.utils.StepResponseInterpolator;
+import com.lennonwoo.rubber.utils.Utils;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -94,7 +95,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
     private int circularImgDiam;
     private int circularProgressDiam;
 
-    private PlayListAdapter adapter;
+    private SongfactListAdapter adapter;
 
     private BroadcastReceiver br = new BroadcastReceiver() {
         @Override
@@ -292,18 +293,17 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
                 .into(songArtSmall, new PaletteGeneratorTransformation.Callback(songArtSmall) {
                     @Override
                     public void onPalette(Palette palette) {
-                        //TODO getColor warning!
                             circularProgress.setLoadedProgressColor(
-                                        palette.getVibrantColor(context.getResources().getColor(R.color.colorAccent))
+                                    palette.getVibrantColor(Utils.getColor(context, R.color.colorAccent))
                                 );
                             circularProgress.setEmptyProgressColor(
-                                        palette.getLightMutedColor(context.getResources().getColor(R.color.white))
+                                    palette.getLightMutedColor(Utils.getColor(context, R.color.white))
                                 );
                             circularProgress.setTimeTextColor(
-                                        palette.getLightVibrantColor(context.getResources().getColor(R.color.colorPrimary))
+                                    palette.getLightVibrantColor(Utils.getColor(context, R.color.colorPrimary))
                                 );
                             circularImg.setShadowColor(
-                                    palette.getVibrantColor(context.getResources().getColor(R.color.colorAccent))
+                                    palette.getVibrantColor(Utils.getColor(context, R.color.colorAccent))
                                 );
                         }
                     });
@@ -368,7 +368,7 @@ public class PlayerFragment extends Fragment implements PlayerContract.View, Cir
             public void onPanelHidden(View panel) {
             }
         });
-        adapter = new PlayListAdapter(context, presenter);
+        adapter = new SongfactListAdapter(context, presenter);
         playlist.setLayoutManager(new LinearLayoutManager(context));
         playlist.setAdapter(adapter);
 

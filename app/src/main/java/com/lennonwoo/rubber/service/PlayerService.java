@@ -146,10 +146,8 @@ public class PlayerService extends Service {
                         showPanel.setAction(MainActivity.ACTION_SHOW_PANEL);
                         sendBroadcast(showPanel);
                     } else {
-                        //TODO still have bug!!!!
                         showPanel = new Intent(this, MainActivity.class);
-                        showPanel.putExtra(MainActivity.EXPAND_PANEL, true);
-                        showPanel.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        showPanel.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         startActivity(showPanel);
                     }
                     break;

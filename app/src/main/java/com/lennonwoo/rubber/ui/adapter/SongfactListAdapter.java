@@ -21,7 +21,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.SongViewHolder>{
+// TODO refactor this Adapter to Songfacts
+public class SongfactListAdapter extends RecyclerView.Adapter<SongfactListAdapter.SongViewHolder>{
 
     private Context context;
 
@@ -29,7 +30,7 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.SongVi
 
     private PlayerContract.Presenter presenter;
 
-    public PlayListAdapter(Context context, PlayerContract.Presenter presenter) {
+    public SongfactListAdapter(Context context, PlayerContract.Presenter presenter) {
         super();
         this.context = context;
         this.presenter = presenter;
@@ -81,7 +82,6 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.SongVi
         TextView songName;
         @BindView(R.id.song_artist)
         TextView songArtist;
-        //TODO listen music for some time to show this btn so that you are really like this music
         @BindView(R.id.fav_btn)
         LikeButton favBtn;
         @BindView(R.id.song_time)

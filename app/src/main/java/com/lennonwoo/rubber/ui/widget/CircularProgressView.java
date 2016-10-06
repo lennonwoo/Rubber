@@ -88,10 +88,7 @@ public class CircularProgressView extends View {
         super.onDraw(canvas);
         if (bePlaying || firstDraw) {
             canvas.drawArc(rectMusicProgressCircle, 150, 240, false, paintEmptyProgress);
-            if (currentProgress == 0) {
-                canvas.drawArc(rectMusicProgressCircle, 150,
-                        (float) (0.0001), false, paintEmptyProgress);
-            } else {
+            if (currentProgress != 0) {
                 canvas.drawArc(rectMusicProgressCircle, 150,
                         (float) (240 * currentProgress * 1.0) / songDuration, false, paintLoadedProgress);
             }
@@ -123,6 +120,7 @@ public class CircularProgressView extends View {
         float y = -(downY - squareCenter);
         Double d = Math.toDegrees(Math.atan2(y, x));
         if (d >= -150 && d <= -30) {
+            // change there to add start/pause answer
             return true;
         } else if(d >= -180 && d <= -150) {
             d += 180;
@@ -205,15 +203,14 @@ public class CircularProgressView extends View {
         setWillNotDraw(false);
 
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.CircularProgressView);
-        //TODO -- getColor warning
         timeTextColor = ta.getColor(R.styleable.CircularProgressView_timeTextColor,
-                getResources().getColor(R.color.black));
+                Utils.getColor(context, R.color.black));
         timeTextSize = ta.getDimensionPixelSize(R.styleable.CircularProgressView_timeTextSize,
                 getResources().getDimensionPixelSize(R.dimen.circle_progress_text_size));
         emptyProgressColor = ta.getColor(R.styleable.CircularProgressView_progressEmptyColor,
-                getResources().getColor(R.color.gray));
+                Utils.getColor(context, R.color.gray));
         loadedProgressColor = ta.getColor(R.styleable.CircularProgressView_progressLoadedColor,
-                getResources().getColor(R.color.colorAccent));
+                Utils.getColor(context, R.color.colorAccent));
         ta.recycle();
 
         initPaint();

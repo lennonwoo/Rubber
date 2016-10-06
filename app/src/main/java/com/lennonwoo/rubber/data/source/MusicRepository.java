@@ -74,10 +74,28 @@ public class MusicRepository implements MusicDataSourceContract{
         } else {
             switch (type) {
                 case ALL:
-                    playlistCache = songListCache;
-                    return Observable.from(playlistCache).toList();
+                    return mLocalDataSource.getSongList()
+                            .flatMap(new Func1<List<Song>, Observable<Song>>() {
+                                @Override
+                                public Observable<Song> call(List<Song> songs) {
+                                    songListCache = songs;
+                                    for (Song song : songListCache) {
+                                        song.setArtPath(albumArtMap.get(song.getAlbumId()));
+                                        songMap.put(song.getSongId(), song);
+                                    }
+                                    Collections.shuffle(songListCache);
+                                    playlistCache = songListCache;
+                                    return Observable.from(playlistCache);
+                                }
+                            })
+                            .doOnCompleted(new Action0() {
+                                @Override
+                                public void call() {
+                                    cacheIsDirty = false;
+                                }
+                            })
+                            .toList();
                 case FAV:
-                    //TODO change Observable<Song> to Observable<List<Song>>
                     return mLocalDataSource.getFavList()
                             .flatMap(new Func1<List<Fav>, Observable<Song>>() {
                                 @Override
@@ -120,8 +138,6 @@ public class MusicRepository implements MusicDataSourceContract{
     private void init() {
         albumArtMap = new HashMap<>();
         songMap = new HashMap<>();
-        cacheIsDirty = true;
-        //TODO try subscribe on io() failed *then observe on mainThread()* 
         mLocalDataSource.getAlbumList()
                 .subscribe(new Action1<List<Album>>() {
                     @Override
@@ -144,6 +160,7 @@ public class MusicRepository implements MusicDataSourceContract{
                         Collections.shuffle(songListCache);
                     }
                 });
+        cacheIsDirty = false;
     }
 
 }

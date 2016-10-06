@@ -1,5 +1,10 @@
 package com.lennonwoo.rubber.utils;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+
 public class Utils {
 
     public static String durationToString(int duration) {
@@ -13,6 +18,19 @@ public class Utils {
         }
         builder.append(second);
         return builder.toString();
+    }
+
+    public static int getColor(Context context, int id) {
+        return ContextCompat.getColor(context, id);
+    }
+
+    public static void showMessageOKCancel(Context context, String message, DialogInterface.OnClickListener okListener, DialogInterface.OnClickListener cancelListener) {
+        new AlertDialog.Builder(context)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", cancelListener)
+                .create()
+                .show();
     }
 
 }
