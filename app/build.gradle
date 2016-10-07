@@ -52,4 +52,7 @@ dependencies {
 
     // Picasso
     compile 'com.squareup.picasso:picasso:2.5.2'
+
+    // Jsoup
+    compile 'org.jsoup:jsoup:1.9.2'
 }

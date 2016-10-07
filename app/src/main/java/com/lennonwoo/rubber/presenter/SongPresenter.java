@@ -3,8 +3,11 @@ package com.lennonwoo.rubber.presenter;
 import com.lennonwoo.rubber.contract.MusicDataSourceContract;
 import com.lennonwoo.rubber.contract.SongContract;
 import com.lennonwoo.rubber.data.model.local.Song;
+import com.lennonwoo.rubber.data.model.remote.SongFact;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import rx.Subscription;
@@ -15,6 +18,8 @@ import rx.subscriptions.CompositeSubscription;
 
 public class SongPresenter implements SongContract.Presenter {
 
+    public static final String TAG = SongPresenter.class.getSimpleName();
+
     private SongContract.PlayerView playerView;
     private SongContract.SongListView songListView;
 
@@ -23,6 +28,7 @@ public class SongPresenter implements SongContract.Presenter {
     private CompositeSubscription mSubscriptions;
 
     private List<Song> currentSongList;
+    private Map<Song, List<SongFact>> songFactMap = new HashMap<Song, List<SongFact>>();
 
     private int playingSongIndex;
 
@@ -95,7 +101,6 @@ public class SongPresenter implements SongContract.Presenter {
 
     @Override
     public void refreshPlayerView() {
-        playerView.setRecyclerItems(currentSongList);
         playerView.setPlayingSongInfo(currentSongList.get(playingSongIndex));
     }
 
@@ -149,6 +154,29 @@ public class SongPresenter implements SongContract.Presenter {
     @Override
     public SongContract.PlayType getPlayType() {
         return playType;
+    }
+
+    @Override
+    public void refreshSongFact() {
+        Song currentSong = getCurrentPlayingSong();
+        if (songFactMap.get(currentSong) != null) {
+            playerView.setRecyclerItems(songFactMap.get(currentSong));
+        } else {
+            mMusicRepository.getSongFactList(getCurrentPlayingSong())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<List<SongFact>>() {
+                        @Override
+                        public void call(List<SongFact> songFacts) {
+                            if (songFacts != null && songFacts.size() != 0) {
+                                playerView.setRecyclerItems(songFacts);
+                                songFactMap.put(getCurrentPlayingSong(), songFacts);
+                            } else {
+                                // TODO to change the view to something hint...
+                            }
+                        }
+                    });
+        }
     }
 
     @Override

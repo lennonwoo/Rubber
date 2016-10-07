@@ -4,6 +4,7 @@ import com.lennonwoo.rubber.contract.MusicDataSourceContract;
 import com.lennonwoo.rubber.data.model.local.Album;
 import com.lennonwoo.rubber.data.model.local.Fav;
 import com.lennonwoo.rubber.data.model.local.Song;
+import com.lennonwoo.rubber.data.model.remote.SongFact;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -118,6 +119,11 @@ public class MusicRepository implements MusicDataSourceContract{
                     return null;
             }
         }
+    }
+
+    @Override
+    public Observable<List<SongFact>> getSongFactList(Song song) {
+        return mRemoteDataSource.getSongFactList(song);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.lennonwoo.rubber.contract;
 import com.lennonwoo.rubber.data.model.local.Album;
 import com.lennonwoo.rubber.data.model.local.Fav;
 import com.lennonwoo.rubber.data.model.local.Song;
+import com.lennonwoo.rubber.data.model.remote.SongFact;
 
 import java.util.List;
 
@@ -21,6 +22,8 @@ public interface MusicDataSourceContract {
 
     Observable<List<Song>> getPlaylist(PlaylistType type);
 
+    Observable<List<SongFact>> getSongFactList(Song song);
+
     void saveFavSong(long songId);
 
     void deleteFavSong(long songId);
@@ -35,6 +38,8 @@ public interface MusicDataSourceContract {
 
         Observable<List<Fav>> getFavList();
 
+        Observable<List<SongFact>> getSongFactList(Song song);
+
         void saveFavSong(long songId);
 
         void deleteFavSong(long songId);
@@ -42,6 +47,8 @@ public interface MusicDataSourceContract {
     }
 
     interface RemoteDataSource {
+
+        Observable<List<SongFact>> getSongFactList(Song song);
 
     }
 

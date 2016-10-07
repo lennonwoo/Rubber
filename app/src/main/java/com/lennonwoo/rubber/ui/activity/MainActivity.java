@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         PlayerFragment playerFragment = new PlayerFragment();
         playerFragment.setSlidingUpPanelLayout(slidingUpPanelLayout);
         MusicRepository musicRepository = MusicRepository.getInstance(
-                MusicLocalDataSource.getInstance(this), MusicRemoteDataSource.getInstace(this));
+                MusicLocalDataSource.getInstance(this), MusicRemoteDataSource.getInstance(this));
         // mvp's bind
         songPresenter = new SongPresenter(songListFragment, playerFragment, musicRepository);
 

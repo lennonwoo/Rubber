@@ -35,10 +35,12 @@ import android.widget.TextView;
 import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.contract.SongContract;
 import com.lennonwoo.rubber.data.model.local.Song;
+import com.lennonwoo.rubber.data.model.remote.SongFact;
 import com.lennonwoo.rubber.service.PlayerService;
 import com.lennonwoo.rubber.ui.activity.MainActivity;
 import com.lennonwoo.rubber.ui.adapter.SongfactListAdapter;
 import com.lennonwoo.rubber.ui.widget.CircularProgressView;
+import com.lennonwoo.rubber.ui.widget.ListSpacesItemDecoration;
 import com.lennonwoo.rubber.ui.widget.slidinguppanel.SlidingUpPanelLayout;
 import com.lennonwoo.rubber.utils.BlurTransformation;
 import com.lennonwoo.rubber.utils.PaletteGeneratorTransformation;
@@ -93,7 +95,7 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
     @BindView(R.id.circle_progress)
     CircularProgressView circularProgress;
     @BindView(R.id.playlist)
-    RecyclerView playlist;
+    RecyclerView songFactList;
 
     @OnClick(R.id.start_pause)
     public void startPauseClick() {
@@ -121,6 +123,7 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
                     break;
                 case ACTION_UPDATE_FRAGMENT:
                     presenter.refreshPlayerView();
+                    presenter.refreshSongFact();
                     if (slidingUpPanelLayout.isPanelHidden()) {
                         slidingUpPanelLayout.expandPanel();
                     }
@@ -280,8 +283,9 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
     }
 
     @Override
-    public void setRecyclerItems(List<Song> factList) {
-        adapter.setFactList(factList);
+    public void setRecyclerItems(List<SongFact> factList) {
+        if (factList != null && factList.size() != 0)
+            adapter.setFactList(factList);
     }
 
     @Override
@@ -370,6 +374,13 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
         circularProgressDiam = (int) (bigPanelArtLength * 0.75);
         songArtLayout.getLayoutParams().height = bigPanelArtLength;
         blurImg.getLayoutParams().height = bigPanelArtLength;
+        blurImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PlayerService.ACTION_NEXT_SONG);
+                context.sendBroadcast(intent);
+            }
+        });
         circularImg.getLayoutParams().height = circularImgDiam;
         circularImg.getLayoutParams().width = circularImgDiam;
         circularProgress.setSongOperation(this);
@@ -401,9 +412,9 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
             }
         });
         adapter = new SongfactListAdapter(context, presenter);
-        playlist.setLayoutManager(new LinearLayoutManager(context));
-        playlist.setAdapter(adapter);
-
+        songFactList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        songFactList.addItemDecoration(new ListSpacesItemDecoration(context, Utils.dpToPx(context, 10)));
+        songFactList.setAdapter(adapter);
     }
 
     private void songStartViewUpdate() {

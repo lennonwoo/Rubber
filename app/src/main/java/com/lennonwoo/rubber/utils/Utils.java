@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.graphics.Palette;
+import android.util.DisplayMetrics;
 
 import com.lennonwoo.rubber.R;
 
@@ -58,5 +59,10 @@ public class Utils {
         anim.addUpdateListener(listener);
         anim.setDuration(1000);
         anim.start();
+    }
+
+    public static int dpToPx(Context context, int dp) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 }

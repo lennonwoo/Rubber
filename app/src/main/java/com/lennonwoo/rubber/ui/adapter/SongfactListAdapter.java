@@ -3,6 +3,7 @@ package com.lennonwoo.rubber.ui.adapter;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +11,7 @@ import android.widget.TextView;
 
 import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.contract.SongContract;
-import com.lennonwoo.rubber.data.model.local.Song;
-import com.lennonwoo.rubber.utils.Utils;
-import com.like.LikeButton;
-import com.like.OnLikeListener;
+import com.lennonwoo.rubber.data.model.remote.SongFact;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +24,7 @@ public class SongfactListAdapter extends RecyclerView.Adapter<SongfactListAdapte
 
     private Context context;
 
-    private List<Song> factList;
+    private List<SongFact> factList;
 
     private SongContract.Presenter presenter;
 
@@ -45,23 +43,7 @@ public class SongfactListAdapter extends RecyclerView.Adapter<SongfactListAdapte
 
     @Override
     public void onBindViewHolder(final SongViewHolder holder, int position) {
-        holder.songName.setText(factList.get(position).getName());
-        holder.songArtist.setText(factList.get(position).getArtist());
-        holder.songTime.setText(Utils.durationToString(
-                factList.get(position).getDuration() / 1000));
-        holder.favBtn.setOnLikeListener(new OnLikeListener() {
-            @Override
-            public void liked(LikeButton likeButton) {
-                long songId = factList.get(holder.getAdapterPosition()).getSongId();
-                presenter.saveFavSong(songId);
-            }
-
-            @Override
-            public void unLiked(LikeButton likeButton) {
-                long songId = factList.get(holder.getAdapterPosition()).getSongId();
-                presenter.deleteFavSong(songId);
-            }
-        });
+        holder.songFactTv.setText(factList.get(position).getSongFact());
     }
 
     @Override
@@ -69,7 +51,7 @@ public class SongfactListAdapter extends RecyclerView.Adapter<SongfactListAdapte
         return factList.size();
     }
 
-    public void setFactList(List<Song> factList) {
+    public void setFactList(List<SongFact> factList) {
         this.factList = factList;
     }
 
@@ -78,18 +60,13 @@ public class SongfactListAdapter extends RecyclerView.Adapter<SongfactListAdapte
 
         @BindView(R.id.fact_card)
         CardView songCard;
-        @BindView(R.id.song_name)
-        TextView songName;
-        @BindView(R.id.song_artist)
-        TextView songArtist;
-        @BindView(R.id.fav_btn)
-        LikeButton favBtn;
-        @BindView(R.id.song_time)
-        TextView songTime;
+        @BindView(R.id.song_fact_tv)
+        TextView songFactTv;
 
         public SongViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            songFactTv.setMovementMethod(ScrollingMovementMethod.getInstance());
         }
     }
 

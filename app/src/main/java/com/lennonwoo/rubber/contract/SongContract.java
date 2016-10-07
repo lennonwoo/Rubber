@@ -3,6 +3,7 @@ package com.lennonwoo.rubber.contract;
 import com.lennonwoo.rubber.contract.base.BasePresenter;
 import com.lennonwoo.rubber.contract.base.BaseView;
 import com.lennonwoo.rubber.data.model.local.Song;
+import com.lennonwoo.rubber.data.model.remote.SongFact;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface SongContract {
 
         void setPlayingSongInfo(Song currentSong);
 
-        void setRecyclerItems(List<Song> factList);
+        void setRecyclerItems(List<SongFact> factList);
 
     }
 
@@ -45,6 +46,8 @@ public interface SongContract {
         void setPlayType(PlayType playType);
 
         PlayType getPlayType();
+
+        void refreshSongFact();
 
         void saveFavSong(long songId);
 

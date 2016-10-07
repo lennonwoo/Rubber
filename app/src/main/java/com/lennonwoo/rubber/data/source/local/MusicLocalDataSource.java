@@ -10,6 +10,7 @@ import com.lennonwoo.rubber.contract.MusicDataSourceContract;
 import com.lennonwoo.rubber.data.model.local.Album;
 import com.lennonwoo.rubber.data.model.local.Fav;
 import com.lennonwoo.rubber.data.model.local.Song;
+import com.lennonwoo.rubber.data.model.remote.SongFact;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +86,11 @@ public class MusicLocalDataSource implements MusicDataSourceContract.LocalDataSo
             cursor.close();
         }
         return Observable.from(favList).toList();
+    }
+
+    @Override
+    public Observable<List<SongFact>> getSongFactList(Song song) {
+        return null;
     }
 
     @Override
