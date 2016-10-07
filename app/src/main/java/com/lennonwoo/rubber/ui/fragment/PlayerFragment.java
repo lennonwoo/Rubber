@@ -9,10 +9,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +25,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,6 +36,7 @@ import com.lennonwoo.rubber.R;
 import com.lennonwoo.rubber.contract.SongContract;
 import com.lennonwoo.rubber.data.model.local.Song;
 import com.lennonwoo.rubber.service.PlayerService;
+import com.lennonwoo.rubber.ui.activity.MainActivity;
 import com.lennonwoo.rubber.ui.adapter.SongfactListAdapter;
 import com.lennonwoo.rubber.ui.widget.CircularProgressView;
 import com.lennonwoo.rubber.ui.widget.slidinguppanel.SlidingUpPanelLayout;
@@ -46,6 +53,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class PlayerFragment extends Fragment implements SongContract.PlayerView, CircularProgressView.SongOperation {
 
@@ -68,14 +76,14 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
 
     private SlidingUpPanelLayout slidingUpPanelLayout;
 
-    @BindView(R.id.player_small)
+    @BindView(R.id.small_panel)
     LinearLayout smallPanel;
     @BindView(R.id.song_art_small)
     ImageView songArtSmall;
     @BindView(R.id.song_info_small)
     TextView songInfoSmall;
-    @BindView(R.id.play_stop)
-    ImageView resumePause;
+    @BindView(R.id.start_pause)
+    ImageView startPauseImg;
     @BindView(R.id.song_art_layout)
     RelativeLayout songArtLayout;
     @BindView(R.id.blur_img)
@@ -86,6 +94,11 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
     CircularProgressView circularProgress;
     @BindView(R.id.playlist)
     RecyclerView playlist;
+
+    @OnClick(R.id.start_pause)
+    public void startPauseClick() {
+        startPauseSong();
+    }
 
     //width and height
     private int smallPanelArtLength;
@@ -101,25 +114,10 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
                 case PlayerService.ACTION_START:
-                    circularProgress.start();
-                    rotateAnim = ObjectAnimator.ofFloat(circularImg, View.ROTATION, 0, 360f);
-                    rotateAnim.setDuration(10000);
-                    rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
-                    rotateAnim.setInterpolator(new LinearInterpolator());
-                    rotateAnim.start();
+                    songStartViewUpdate();
                     break;
                 case PlayerService.ACTION_PAUSE:
-                    circularProgress.pause();
-                    rotateAnim.cancel();
-                    if (circularImg.getRotation() > 180f) {
-                        rotateAnim.setFloatValues(circularImg.getRotation(), 360f);
-                    } else {
-                        rotateAnim.setFloatValues(circularImg.getRotation(), 0f);
-                    }
-                    rotateAnim.setRepeatCount(0);
-                    rotateAnim.setDuration(3000);
-                    rotateAnim.setInterpolator(new StepResponseInterpolator());
-                    rotateAnim.start();
+                    songPauseViewUpdate();
                     break;
                 case ACTION_UPDATE_FRAGMENT:
                     presenter.refreshPlayerView();
@@ -288,6 +286,7 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
 
     @Override
     public void setPlayingSongInfo(Song song) {
+        songInfoSmall.setText(song.getName());
         Picasso.with(context)
                 .load(new File(song.getArtPath()))
                 .resize(smallPanelArtLength, smallPanelArtLength)
@@ -296,20 +295,30 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
                 .into(songArtSmall, new PaletteGeneratorTransformation.Callback(songArtSmall) {
                     @Override
                     public void onPalette(Palette palette) {
-                            circularProgress.setLoadedProgressColor(
-                                    palette.getVibrantColor(Utils.getColor(context, R.color.colorAccent))
-                                );
-                            circularProgress.setEmptyProgressColor(
-                                    palette.getLightMutedColor(Utils.getColor(context, R.color.white))
-                                );
-                            circularProgress.setTimeTextColor(
-                                    palette.getLightVibrantColor(Utils.getColor(context, R.color.colorPrimary))
-                                );
-                            circularImg.setShadowColor(
-                                    palette.getVibrantColor(Utils.getColor(context, R.color.colorAccent))
-                                );
-                        }
-                    });
+                        int vibrantColor = Utils.getVibrantColor(context, palette);
+                        int lightMutedColor = Utils.getLightMutedColor(context, palette);
+                        int lightVibrantColor = Utils.getLightVibrantColor(context, palette);
+                        circularProgress.setLoadedProgressColor(vibrantColor);
+                        circularProgress.setEmptyProgressColor(lightMutedColor);
+                        circularProgress.setTimeTextColor(lightVibrantColor);
+                        circularImg.setShadowColor(vibrantColor);
+                        songInfoSmall.setTextColor(lightVibrantColor);
+                        final ColorDrawable color = (ColorDrawable) smallPanel.getBackground();
+                        Utils.colorChangeAnim(color.getColor(), vibrantColor, new ValueAnimator.AnimatorUpdateListener() {
+                            FloatingActionButton fab = ((MainActivity) getActivity()).songListFragment.fabFav;
+                            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+                            Window window = getActivity().getWindow();
+                            @Override
+                            public void onAnimationUpdate(ValueAnimator animation) {
+                                int color = (int) animation.getAnimatedValue();
+                                smallPanel.setBackgroundColor(color);
+                                window.setStatusBarColor(color);
+                                fab.setBackgroundTintList(ColorStateList.valueOf(color));
+                                if (actionBar != null)
+                                    actionBar.setBackgroundDrawable(new ColorDrawable(color));
+                            }
+                        });
+                    }});
         Picasso.with(context)
                 .load(new File(song.getArtPath()))
                 .resize(circularImgDiam, circularImgDiam)
@@ -323,6 +332,11 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
         circularProgress
                 .setSongDuration(song.getDuration() / 1000)
                 .begin();
+        if (PlayerService.mediaPlayer.isPlaying()) {
+            songStartViewUpdate();
+        } else {
+            songPauseViewUpdate();
+        }
     }
 
 
@@ -375,5 +389,30 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
         playlist.setLayoutManager(new LinearLayoutManager(context));
         playlist.setAdapter(adapter);
 
+    }
+
+    private void songStartViewUpdate() {
+        circularProgress.start();
+        rotateAnim = ObjectAnimator.ofFloat(circularImg, View.ROTATION, 0, 360f);
+        rotateAnim.setDuration(10000);
+        rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
+        rotateAnim.setInterpolator(new LinearInterpolator());
+        rotateAnim.start();
+        startPauseImg.setImageResource(R.drawable.ic_pause_white_36dp);
+    }
+
+    private void songPauseViewUpdate() {
+        circularProgress.pause();
+        rotateAnim.cancel();
+        if (circularImg.getRotation() > 180f) {
+            rotateAnim.setFloatValues(circularImg.getRotation(), 360f);
+        } else {
+            rotateAnim.setFloatValues(circularImg.getRotation(), 0f);
+        }
+        rotateAnim.setRepeatCount(0);
+        rotateAnim.setDuration(3000);
+        rotateAnim.setInterpolator(new StepResponseInterpolator());
+        rotateAnim.start();
+        startPauseImg.setImageResource(R.drawable.ic_start_arrow_white_36dp);
     }
 }

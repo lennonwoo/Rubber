@@ -159,8 +159,7 @@ public class CircularProgressView extends View {
     }
 
     public CircularProgressView setEmptyProgressColor(int color) {
-        ValueAnimator emptyProgressColorAnim = ValueAnimator.ofArgb(this.emptyProgressColor, color);
-        emptyProgressColorAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        Utils.colorChangeAnim(this.emptyProgressColor, color, new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 emptyProgressColor = (int) animation.getAnimatedValue();
@@ -168,8 +167,6 @@ public class CircularProgressView extends View {
                 invalidate();
             }
         });
-        emptyProgressColorAnim.setDuration(1000);
-        emptyProgressColorAnim.start();
         return this;
     }
 

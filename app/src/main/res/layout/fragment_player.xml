@@ -6,9 +6,10 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/player_small"
+        android:id="@+id/small_panel"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sliding_up_panel_bottom_height"
+        android:background="@color/colorPrimary"
         android:orientation="horizontal">
 
         <ImageView
@@ -23,14 +24,17 @@
             android:layout_weight="1"
             android:ellipsize="marquee"
             android:marqueeRepeatLimit="marquee_forever"
-            android:padding="10dp"
-            android:singleLine="true"/>
+            android:padding="20dp"
+            android:singleLine="true"
+            android:textSize="20dp"
+            android:textStyle="italic"/>
 
         <ImageView
-            android:id="@+id/play_stop"
+            android:id="@+id/start_pause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"/>
+            android:padding="18dp"
+            android:src="@drawable/ic_start_arrow_white_36dp"/>
 
     </LinearLayout>
 

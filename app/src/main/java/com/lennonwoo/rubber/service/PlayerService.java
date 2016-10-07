@@ -211,10 +211,10 @@ public class PlayerService extends Service {
             notification.contentView.setOnClickPendingIntent(R.id.notification_play_pause_song, pausePendingIntent);
         } else {
             Picasso.with(this)
-                    .load(R.drawable.ic_play_arrow_white_36dp)
+                    .load(R.drawable.ic_start_arrow_white_36dp)
                     .into(notification.bigContentView, R.id.notification_play_pause_song, NOTIFICATION_ID, notification);
             Picasso.with(this)
-                    .load(R.drawable.ic_play_arrow_white_36dp)
+                    .load(R.drawable.ic_start_arrow_white_36dp)
                     .into(notification.contentView, R.id.notification_play_pause_song, NOTIFICATION_ID, notification);
             Intent startIntent = new Intent();
             startIntent.setAction(ACTION_START);

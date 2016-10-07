@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static boolean active;
 
+    public SongListFragment songListFragment;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.drawer_layout)
@@ -141,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        SongListFragment songListFragment = new SongListFragment();
+        songListFragment = new SongListFragment();
         PlayerFragment playerFragment = new PlayerFragment();
         playerFragment.setSlidingUpPanelLayout(slidingUpPanelLayout);
         MusicRepository musicRepository = MusicRepository.getInstance(

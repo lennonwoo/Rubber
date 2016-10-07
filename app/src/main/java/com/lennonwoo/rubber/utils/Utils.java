@@ -1,9 +1,13 @@
 package com.lennonwoo.rubber.utils;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.graphics.Palette;
+
+import com.lennonwoo.rubber.R;
 
 public class Utils {
 
@@ -33,4 +37,22 @@ public class Utils {
                 .show();
     }
 
+    public static int getVibrantColor(Context context, Palette palette) {
+        return palette.getVibrantColor(getColor(context, R.color.colorAccent));
+    }
+
+    public static int getLightMutedColor(Context context, Palette palette) {
+        return palette.getLightMutedColor(Utils.getColor(context, R.color.white));
+    }
+
+    public static int getLightVibrantColor(Context context, Palette palette) {
+        return palette.getLightVibrantColor(Utils.getColor(context, R.color.colorPrimary));
+    }
+
+    public static void colorChangeAnim(int oldColor, int newColor, ValueAnimator.AnimatorUpdateListener listener) {
+        ValueAnimator anim = ValueAnimator.ofArgb(oldColor, newColor);
+        anim.addUpdateListener(listener);
+        anim.setDuration(1000);
+        anim.start();
+    }
 }

@@ -49,7 +49,7 @@
                 android:id="@+id/notification_prev_song"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="9dp"
                 android:layout_weight="1"
                 android:src="@drawable/ic_skip_previous_white_36dp"/>
 
@@ -57,7 +57,7 @@
                 android:id="@+id/notification_play_pause_song"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="9dp"
                 android:layout_weight="1"
                 android:src="@drawable/ic_pause_white_36dp"/>
 
@@ -65,7 +65,7 @@
                 android:id="@+id/notification_next_song"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="9dp"
                 android:layout_weight="1"
                 android:src="@drawable/ic_skip_next_white_36dp"/>
         </LinearLayout>
