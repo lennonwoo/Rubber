@@ -49,6 +49,10 @@ public class Utils {
         return palette.getLightVibrantColor(Utils.getColor(context, R.color.colorPrimary));
     }
 
+    public static int getDarkVibrantColor(Context context, Palette palette) {
+        return palette.getDarkVibrantColor(Utils.getColor(context, R.color.colorPrimaryDark));
+    }
+
     public static void colorChangeAnim(int oldColor, int newColor, ValueAnimator.AnimatorUpdateListener listener) {
         ValueAnimator anim = ValueAnimator.ofArgb(oldColor, newColor);
         anim.addUpdateListener(listener);

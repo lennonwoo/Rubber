@@ -185,20 +185,24 @@ public class CircularProgressView extends View {
         this.currentProgress = songPosition;
     }
 
-    public CircularProgressView begin() {
+    public CircularProgressView prepare() {
+        currentProgress = 0;
+        bePlaying = false;
         if (newSong) {
             progressHandler.postDelayed(runnableProgress, PROGRESS_DELAY);
             newSong = false;
+            bePlaying = true;
         }
-        currentProgress = 0;
-        bePlaying = true;
         return this;
     }
 
     public void start() {
-        bePlaying = true;
-        progressHandler.postDelayed(runnableProgress, PROGRESS_DELAY);
-        invalidate();
+        System.out.println();
+        if (!bePlaying) {
+            bePlaying = true;
+            progressHandler.postDelayed(runnableProgress, PROGRESS_DELAY);
+            invalidate();
+        }
     }
 
     public void pause() {
@@ -226,7 +230,7 @@ public class CircularProgressView extends View {
 
         progressHandler = new Handler();
 
-        bePlaying = true;
+        bePlaying = false;
         firstDraw = true;
         newSong = true;
         //initialize value to initialize onDraw()

@@ -297,33 +297,48 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
                     public void onPalette(Palette palette) {
                         int vibrantColor = Utils.getVibrantColor(context, palette);
                         int lightMutedColor = Utils.getLightMutedColor(context, palette);
+                        int darkVibrantColor = Utils.getDarkVibrantColor(context, palette);
                         int lightVibrantColor = Utils.getLightVibrantColor(context, palette);
                         circularProgress.setLoadedProgressColor(vibrantColor);
                         circularProgress.setEmptyProgressColor(lightMutedColor);
                         circularProgress.setTimeTextColor(lightVibrantColor);
                         circularImg.setShadowColor(vibrantColor);
-                        songInfoSmall.setTextColor(lightVibrantColor);
+                        Utils.colorChangeAnim(songInfoSmall.getCurrentTextColor(), lightVibrantColor, new ValueAnimator.AnimatorUpdateListener() {
+                            FloatingActionButton fab = ((MainActivity) getActivity()).songListFragment.fabFav;
+                            @Override
+                            public void onAnimationUpdate(ValueAnimator animation) {
+                                int color = (int) animation.getAnimatedValue();
+                                songInfoSmall.setTextColor(color);
+                                fab.setBackgroundTintList(ColorStateList.valueOf(color));
+                            }
+                        });
+                        final Window window = getActivity().getWindow();
+                        Utils.colorChangeAnim(window.getStatusBarColor(), darkVibrantColor, new ValueAnimator.AnimatorUpdateListener() {
+                            @Override
+                            public void onAnimationUpdate(ValueAnimator animation) {
+                                int color = (int) animation.getAnimatedValue();
+                                window.setStatusBarColor(color);
+                            }
+                        });
                         final ColorDrawable color = (ColorDrawable) smallPanel.getBackground();
                         Utils.colorChangeAnim(color.getColor(), vibrantColor, new ValueAnimator.AnimatorUpdateListener() {
-                            FloatingActionButton fab = ((MainActivity) getActivity()).songListFragment.fabFav;
                             ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-                            Window window = getActivity().getWindow();
                             @Override
                             public void onAnimationUpdate(ValueAnimator animation) {
                                 int color = (int) animation.getAnimatedValue();
                                 smallPanel.setBackgroundColor(color);
-                                window.setStatusBarColor(color);
-                                fab.setBackgroundTintList(ColorStateList.valueOf(color));
                                 if (actionBar != null)
                                     actionBar.setBackgroundDrawable(new ColorDrawable(color));
                             }
                         });
                     }});
+        circularImg.setImageBitmap(null);
         Picasso.with(context)
                 .load(new File(song.getArtPath()))
                 .resize(circularImgDiam, circularImgDiam)
                 .centerCrop()
                 .into(circularImgTarget);
+        blurImg.setImageBitmap(null);
         Picasso.with(context)
                 .load(new File(song.getArtPath()))
                 .resize(bigPanelArtLength, bigPanelArtLength)
@@ -331,7 +346,9 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
                 .into(blurImgTarget);
         circularProgress
                 .setSongDuration(song.getDuration() / 1000)
-                .begin();
+                //TODO try to improve the custom view so that won's be trouble ag in progress time!!
+                .prepare()
+                .start();
         if (PlayerService.mediaPlayer.isPlaying()) {
             songStartViewUpdate();
         } else {
