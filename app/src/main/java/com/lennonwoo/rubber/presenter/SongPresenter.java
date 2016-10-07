@@ -10,9 +10,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -162,8 +165,19 @@ public class SongPresenter implements SongContract.Presenter {
         if (songFactMap.get(currentSong) != null) {
             playerView.setRecyclerItems(songFactMap.get(currentSong));
         } else {
-            mMusicRepository.getSongFactList(getCurrentPlayingSong())
+            Observable.create(new Observable.OnSubscribe<String>() {
+                @Override
+                public void call(Subscriber<? super String> subscriber) {
+                    subscriber.onNext("hello");
+                }
+            })
                     .subscribeOn(Schedulers.io())
+                    .flatMap(new Func1<String, Observable<List<SongFact>>>() {
+                        @Override
+                        public Observable<List<SongFact>> call(String o) {
+                            return mMusicRepository.getSongFactList(getCurrentPlayingSong());
+                        }
+                    })
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<List<SongFact>>() {
                         @Override

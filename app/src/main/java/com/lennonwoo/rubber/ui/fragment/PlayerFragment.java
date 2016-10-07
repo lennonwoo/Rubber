@@ -22,6 +22,7 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -122,6 +123,7 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
                     songPauseViewUpdate();
                     break;
                 case ACTION_UPDATE_FRAGMENT:
+                    Log.d(TAG, Utils.getThreadId() + "");
                     presenter.refreshPlayerView();
                     presenter.refreshSongFact();
                     if (slidingUpPanelLayout.isPanelHidden()) {

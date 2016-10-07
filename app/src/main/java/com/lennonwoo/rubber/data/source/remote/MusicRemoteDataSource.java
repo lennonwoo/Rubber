@@ -7,6 +7,7 @@ import android.util.Log;
 import com.lennonwoo.rubber.contract.MusicDataSourceContract;
 import com.lennonwoo.rubber.data.model.local.Song;
 import com.lennonwoo.rubber.data.model.remote.SongFact;
+import com.lennonwoo.rubber.utils.Utils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -40,6 +41,7 @@ public class MusicRemoteDataSource implements MusicDataSourceContract.RemoteData
 
     @Override
     public Observable<List<SongFact>> getSongFactList(Song song) {
+        Log.d(TAG, Utils.getThreadId() + "");
         String originalName = song.getName();
         int bracketIndex = originalName.indexOf('(');
         int dashIndex = originalName.indexOf('-');

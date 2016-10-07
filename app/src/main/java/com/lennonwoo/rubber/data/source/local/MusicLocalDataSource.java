@@ -5,12 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import com.lennonwoo.rubber.contract.MusicDataSourceContract;
 import com.lennonwoo.rubber.data.model.local.Album;
 import com.lennonwoo.rubber.data.model.local.Fav;
 import com.lennonwoo.rubber.data.model.local.Song;
 import com.lennonwoo.rubber.data.model.remote.SongFact;
+import com.lennonwoo.rubber.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,8 @@ import java.util.List;
 import rx.Observable;
 
 public class MusicLocalDataSource implements MusicDataSourceContract.LocalDataSource{
+
+    public static final String TAG = MusicLocalDataSource.class.getSimpleName();
 
     private static MusicLocalDataSource INSTANCE;
 
@@ -39,6 +43,7 @@ public class MusicLocalDataSource implements MusicDataSourceContract.LocalDataSo
 
     @Override
     public Observable<List<Song>> getSongList() {
+        Log.d(TAG, Utils.getThreadId() + "");
         String where = MediaStore.Audio.Media.IS_MUSIC + "=1";
         Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                 null, where, null, null);
