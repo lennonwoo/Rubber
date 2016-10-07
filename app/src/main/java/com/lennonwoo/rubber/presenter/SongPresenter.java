@@ -49,7 +49,7 @@ public class SongPresenter implements SongContract.Presenter {
             mMusicRepository.refreshRepository();
             loadPlaylist();
         } else {
-            refreshView();
+            refreshPlayerView();
         }
     }
 
@@ -94,7 +94,7 @@ public class SongPresenter implements SongContract.Presenter {
     }
 
     @Override
-    public void refreshView() {
+    public void refreshPlayerView() {
         playerView.setRecyclerItems(currentSongList);
         playerView.setPlayingSongInfo(currentSongList.get(playingSongIndex));
     }

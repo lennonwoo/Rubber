@@ -18,8 +18,6 @@ public interface SongContract {
 
         void setRecyclerItems(List<Song> factList);
 
-        void changeSong();
-
     }
 
     interface SongListView extends BaseView<Presenter> {
@@ -36,7 +34,7 @@ public interface SongContract {
 
         void loadPlaylist();
 
-        void refreshView();
+        void refreshPlayerView();
 
         Song getChangedSong(int position);
 

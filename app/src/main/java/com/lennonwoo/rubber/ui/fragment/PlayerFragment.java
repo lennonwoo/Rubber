@@ -122,7 +122,7 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
                     rotateAnim.start();
                     break;
                 case ACTION_UPDATE_FRAGMENT:
-                    presenter.refreshView();
+                    presenter.refreshPlayerView();
                     if (slidingUpPanelLayout.isPanelHidden()) {
                         slidingUpPanelLayout.expandPanel();
                     }
@@ -260,13 +260,6 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
     @Override
     public void setPresenter(SongContract.Presenter presenter) {
         this.presenter = presenter;
-    }
-
-    @Override
-    public void changeSong() {
-        Intent intent = new Intent();
-        intent.setAction(PlayerService.ACTION_CHANGE_SONG);
-        context.sendBroadcast(intent);
     }
 
     @Override

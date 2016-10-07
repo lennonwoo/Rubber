@@ -160,7 +160,7 @@ public class PlayerService extends Service {
                 updateNotification(anotherSong);
                 changeNotificationStatus(true);
                 /*
-                You can also just call presenter.refreshView() in this service
+                You can also just call presenter.refreshPlayerView() in this service
                 but　it's unnecessary to change view when PlayerFragment is invisible
                 so I send a broadcast so that view won't change when fragment is pause
                  */
