@@ -36,8 +36,6 @@ public class CircularProgressView extends View {
 
     private boolean firstDraw;
 
-    private boolean newSong;
-
     private RectF rectMusicProgressCircle;
 
     private Rect rectTimeText;
@@ -55,13 +53,10 @@ public class CircularProgressView extends View {
     private Runnable runnableProgress = new Runnable() {
         @Override
         public void run() {
-            if (!bePlaying) {
+            if (!bePlaying)
                 return;
-            }
-            if (currentProgress >= songDuration) {
-                newSong = true;
+            if (currentProgress >= songDuration)
                 return;
-            }
             currentProgress++;
             postInvalidate();
             progressHandler.postDelayed(runnableProgress, PROGRESS_DELAY);
@@ -188,11 +183,7 @@ public class CircularProgressView extends View {
     public CircularProgressView prepare() {
         currentProgress = 0;
         bePlaying = false;
-        if (newSong) {
-            progressHandler.postDelayed(runnableProgress, PROGRESS_DELAY);
-            newSong = false;
-            bePlaying = true;
-        }
+        progressHandler.removeCallbacks(runnableProgress);
         return this;
     }
 
@@ -232,7 +223,6 @@ public class CircularProgressView extends View {
 
         bePlaying = false;
         firstDraw = true;
-        newSong = true;
         //initialize value to initialize onDraw()
         currentProgress = 0;
         songDuration = 1;

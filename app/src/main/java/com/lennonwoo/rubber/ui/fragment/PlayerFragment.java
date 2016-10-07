@@ -346,9 +346,7 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
                 .into(blurImgTarget);
         circularProgress
                 .setSongDuration(song.getDuration() / 1000)
-                //TODO try to improve the custom view so that won's be trouble ag in progress time!!
-                .prepare()
-                .start();
+                .prepare();
         if (PlayerService.mediaPlayer.isPlaying()) {
             songStartViewUpdate();
         } else {
@@ -410,6 +408,8 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
 
     private void songStartViewUpdate() {
         circularProgress.start();
+        if (rotateAnim != null)
+            rotateAnim.cancel();
         rotateAnim = ObjectAnimator.ofFloat(circularImg, View.ROTATION, 0, 360f);
         rotateAnim.setDuration(10000);
         rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
@@ -420,7 +420,8 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
 
     private void songPauseViewUpdate() {
         circularProgress.pause();
-        rotateAnim.cancel();
+        if (rotateAnim != null)
+            rotateAnim.cancel();
         if (circularImg.getRotation() > 180f) {
             rotateAnim.setFloatValues(circularImg.getRotation(), 360f);
         } else {
