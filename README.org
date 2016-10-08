@@ -1,0 +1,16 @@
+* Rubber
+Rubber is a simple music player that fix personal requirement as well as AOSP
+* Feature
+material design
+song's fact behind music
+MVP with RxJava
+* Screenshot
+[[file:screenshot/Screenshot_20161007-141314.png][png1]] [[file:screenshot/Screenshot_20161008-131334.png][png2]]
+* External libraries used 
+[[https://github.com/lopspower/CircularImageView][CircularImageView]]
+[[https://github.com/JakeWharton/butterknife][butterknife]]
+[[https://github.com/square/picasso][picasso]]
+[[https://github.com/jhy/jsoup/][jsoup]]
+[[https://github.com/ReactiveX/RxJava][RxJava]]
+
+
