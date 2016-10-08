@@ -5,6 +5,7 @@ import com.lennonwoo.rubber.contract.SongContract;
 import com.lennonwoo.rubber.data.model.local.Song;
 import com.lennonwoo.rubber.data.model.remote.SongFact;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,7 +135,9 @@ public class SongPresenter implements SongContract.Presenter {
                                 playerView.setRecyclerItems(songFacts);
                                 songFactMap.put(getCurrentPlayingSong(), songFacts);
                             } else {
-                                // TODO to change the view to something hint...
+                                List<SongFact> noFactFoundList = new ArrayList<SongFact>();
+                                noFactFoundList.add(new SongFact(null, "No song's fact founded :("));
+                                playerView.setRecyclerItems(noFactFoundList);
                             }
                         }
                     });

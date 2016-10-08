@@ -286,8 +286,10 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
 
     @Override
     public void setRecyclerItems(List<SongFact> factList) {
-        if (factList != null && factList.size() != 0)
+        if (factList != null && factList.size() != 0) {
             adapter.setFactList(factList);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override

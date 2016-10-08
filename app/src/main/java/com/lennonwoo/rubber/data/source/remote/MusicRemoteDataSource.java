@@ -61,7 +61,6 @@ public class MusicRemoteDataSource implements MusicDataSourceContract.RemoteData
         }
         builder.delete(builder.length() - 3, builder.length());
         List<SongFact> songFactList = new ArrayList<>();
-        splitName = song.getName().split(" ");
         Elements e = null;
         try {
             Document doc = Jsoup.connect(builder.toString())
@@ -70,7 +69,7 @@ public class MusicRemoteDataSource implements MusicDataSourceContract.RemoteData
                     .cookie("auth", "token")
                     .timeout(3000)
                     .post();
-            Element link = doc.select("li:contains(" + splitName[0].toLowerCase() + ")").select("a").first();
+            Element link = doc.select("li:contains(" + song.getArtist() + ")").select("a").first();
             if (link != null) {
                 String path = link.attr("abs:href");
                 Document facts = Jsoup.connect(path)
