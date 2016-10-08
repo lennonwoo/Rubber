@@ -9,8 +9,7 @@ Rubber is a simple music player that fix personal requirement as well as AOSP
 * MVP with RxJava
 
 # Screenshot
-
-![img](screenshot/Screenshot_20161008-131338.png) ![img](screenshot/Screenshot_20161008-131334.png)
+<img src="screenshot/Screenshot_20161008-131338.png" height="30%">  <img src="screenshot/Screenshot_20161008-131334.png" height="30%">
 
 # External libraries used 
 
