@@ -10,7 +10,7 @@ Rubber is a simple music player that fix personal requirement as well as AOSP
 
 # Screenshot
 
-![img](screenshot/Screenshot_20161007-141314.png) ![img](screenshot/Screenshot_20161008-131334.png)
+![img](screenshot/Screenshot_20161008-131338.png) ![img](screenshot/Screenshot_20161008-131334.png)
 
 # External libraries used 
 
