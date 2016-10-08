@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Random;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -71,9 +70,14 @@ public class SongPresenter implements SongContract.Presenter {
     public void loadTagedPlaylist() {
         mSubscriptions.clear();
         mMusicRepository.refreshRepository();
-        Subscription subscription =
-                mMusicRepository.getPlaylist(MusicDataSourceContract.PlaylistType.FAV)
+        Subscription subscription = Observable.just("")
                 .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<String, Observable<List<Song>>>() {
+                    @Override
+                    public Observable<List<Song>> call(String o) {
+                        return mMusicRepository.getPlaylist(MusicDataSourceContract.PlaylistType.FAV);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<Song>>() {
                     @Override
@@ -88,9 +92,15 @@ public class SongPresenter implements SongContract.Presenter {
     @Override
     public void loadPlaylist() {
         mSubscriptions.clear();
-        Subscription subscription =
-                mMusicRepository.getPlaylist(MusicDataSourceContract.PlaylistType.ALL)
+        mMusicRepository.refreshRepository();
+        Subscription subscription = Observable.just("")
                 .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<String, Observable<List<Song>>>() {
+                    @Override
+                    public Observable<List<Song>> call(String o) {
+                        return mMusicRepository.getPlaylist(MusicDataSourceContract.PlaylistType.ALL);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<List<Song>>() {
                     @Override
@@ -100,6 +110,36 @@ public class SongPresenter implements SongContract.Presenter {
                     }
                 });
         mSubscriptions.add(subscription);
+    }
+
+    @Override
+    public void refreshSongFact() {
+        Song currentSong = getCurrentPlayingSong();
+        if (songFactMap.get(currentSong) != null) {
+            playerView.setRecyclerItems(songFactMap.get(currentSong));
+        } else {
+            Subscription subscription = Observable.just("")
+                    .subscribeOn(Schedulers.io())
+                    .flatMap(new Func1<String, Observable<List<SongFact>>>() {
+                        @Override
+                        public Observable<List<SongFact>> call(String o) {
+                            return mMusicRepository.getSongFactList(getCurrentPlayingSong());
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<List<SongFact>>() {
+                        @Override
+                        public void call(List<SongFact> songFacts) {
+                            if (songFacts != null && songFacts.size() != 0) {
+                                playerView.setRecyclerItems(songFacts);
+                                songFactMap.put(getCurrentPlayingSong(), songFacts);
+                            } else {
+                                // TODO to change the view to something hint...
+                            }
+                        }
+                    });
+            mSubscriptions.add(subscription);
+        }
     }
 
     @Override
@@ -157,40 +197,6 @@ public class SongPresenter implements SongContract.Presenter {
     @Override
     public SongContract.PlayType getPlayType() {
         return playType;
-    }
-
-    @Override
-    public void refreshSongFact() {
-        Song currentSong = getCurrentPlayingSong();
-        if (songFactMap.get(currentSong) != null) {
-            playerView.setRecyclerItems(songFactMap.get(currentSong));
-        } else {
-            Observable.create(new Observable.OnSubscribe<String>() {
-                @Override
-                public void call(Subscriber<? super String> subscriber) {
-                    subscriber.onNext("hello");
-                }
-            })
-                    .subscribeOn(Schedulers.io())
-                    .flatMap(new Func1<String, Observable<List<SongFact>>>() {
-                        @Override
-                        public Observable<List<SongFact>> call(String o) {
-                            return mMusicRepository.getSongFactList(getCurrentPlayingSong());
-                        }
-                    })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<List<SongFact>>() {
-                        @Override
-                        public void call(List<SongFact> songFacts) {
-                            if (songFacts != null && songFacts.size() != 0) {
-                                playerView.setRecyclerItems(songFacts);
-                                songFactMap.put(getCurrentPlayingSong(), songFacts);
-                            } else {
-                                // TODO to change the view to something hint...
-                            }
-                        }
-                    });
-        }
     }
 
     @Override

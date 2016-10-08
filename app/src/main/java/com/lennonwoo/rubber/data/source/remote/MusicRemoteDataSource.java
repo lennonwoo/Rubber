@@ -1,7 +1,6 @@
 package com.lennonwoo.rubber.data.source.remote;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.lennonwoo.rubber.contract.MusicDataSourceContract;
@@ -62,54 +61,33 @@ public class MusicRemoteDataSource implements MusicDataSourceContract.RemoteData
         }
         builder.delete(builder.length() - 3, builder.length());
         List<SongFact> songFactList = new ArrayList<>();
+        splitName = song.getName().split(" ");
+        Elements e = null;
         try {
-            songFactList = new SongFactTask(song).execute(builder.toString()).get();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Observable.from(songFactList).toList();
-    }
-
-    class SongFactTask extends AsyncTask<String, List<SongFact>, List<SongFact>> {
-
-        private Song song;
-        private String[] splitName;
-
-        public SongFactTask(Song song) {
-            this.song = song;
-            splitName = song.getName().split(" ");
-        }
-
-        @Override
-        protected List<SongFact> doInBackground(String... params) {
-            Elements e = null;
-            try {
-                Document doc = Jsoup.connect(params[0])
+            Document doc = Jsoup.connect(builder.toString())
+                    .data("query", "Java")
+                    .userAgent("Mozilla")
+                    .cookie("auth", "token")
+                    .timeout(3000)
+                    .post();
+            Element link = doc.select("li:contains(" + splitName[0].toLowerCase() + ")").select("a").first();
+            if (link != null) {
+                String path = link.attr("abs:href");
+                Document facts = Jsoup.connect(path)
                         .data("query", "Java")
                         .userAgent("Mozilla")
                         .cookie("auth", "token")
                         .timeout(3000)
                         .post();
-                Element link = doc.select("li:contains(" + splitName[0].toLowerCase() + ")").select("a").first();
-                if (link != null) {
-                    String path = link.attr("abs:href");
-                    Document facts = Jsoup.connect(path)
-                            .data("query", "Java")
-                            .userAgent("Mozilla")
-                            .cookie("auth", "token")
-                            .timeout(3000)
-                            .post();
-                    e = facts.select("div.inner");
-                }
-            } catch (IOException IOe) {
-                Log.d("test", "NETWORK???");
+                e = facts.select("div.inner");
             }
-            List<SongFact> songFactList = new ArrayList<>();
-            if (e != null)
-                for (Element review : e)
-                    songFactList.add(new SongFact(song.getName(), review.text()));
-            return songFactList;
+        } catch (IOException IOe) {
+            Log.d("test", "NETWORK???");
         }
+        if (e != null)
+            for (Element review : e)
+                songFactList.add(new SongFact(song.getName(), review.text()));
+        return Observable.from(songFactList).toList();
     }
 
 }
