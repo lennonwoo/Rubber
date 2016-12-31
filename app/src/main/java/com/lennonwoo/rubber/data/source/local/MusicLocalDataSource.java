@@ -23,7 +23,7 @@ public class MusicLocalDataSource implements MusicDataSourceContract.LocalDataSo
 
     public static final String TAG = MusicLocalDataSource.class.getSimpleName();
 
-    private static MusicLocalDataSource INSTANCE;
+    private volatile static MusicLocalDataSource INSTANCE;
 
     Context context;
 
@@ -36,7 +36,10 @@ public class MusicLocalDataSource implements MusicDataSourceContract.LocalDataSo
 
     public static MusicLocalDataSource getInstance(Context context) {
         if (INSTANCE == null) {
-            INSTANCE = new MusicLocalDataSource(context);
+            synchronized (MusicLocalDataSource.class) {
+                if (INSTANCE == null)
+                    INSTANCE = new MusicLocalDataSource(context);
+            }
         }
         return INSTANCE;
     }

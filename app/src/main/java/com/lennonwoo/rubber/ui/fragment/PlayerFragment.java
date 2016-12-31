@@ -425,6 +425,7 @@ public class PlayerFragment extends Fragment implements SongContract.PlayerView,
         circularProgress.start();
         if (rotateAnim != null)
             rotateAnim.cancel();
+        ValueAnimator
         rotateAnim = ObjectAnimator.ofFloat(circularImg, View.ROTATION, 0, 360f);
         rotateAnim.setDuration(10000);
         rotateAnim.setRepeatCount(ValueAnimator.INFINITE);

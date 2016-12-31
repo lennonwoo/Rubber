@@ -258,6 +258,7 @@ public class PlayerService extends Service {
         notification = new Notification.Builder(this)
                 .setSmallIcon(R.drawable.ic_audiotrack_white_24dp)
                 .setOngoing(false)
+                .setAutoCancel(true)
                 .setContentIntent(contentPendingIntent)
                 .setDeleteIntent(deletePendingIntent)
                 .build();

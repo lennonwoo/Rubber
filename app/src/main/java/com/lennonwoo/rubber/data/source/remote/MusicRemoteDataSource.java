@@ -26,14 +26,17 @@ public class MusicRemoteDataSource implements MusicDataSourceContract.RemoteData
     public static final String PREFIX = "http://www.songfacts.com/";
     public static final String SEARCH = "search-songs-1.php?";
 
-    private static MusicRemoteDataSource INSTANCE;
+    private volatile static MusicRemoteDataSource INSTANCE;
 
     private MusicRemoteDataSource(Context context) {
     }
 
     public static MusicRemoteDataSource getInstance(Context context) {
         if (INSTANCE == null) {
-            INSTANCE = new MusicRemoteDataSource(context);
+            synchronized (MusicRemoteDataSource.class) {
+                if (INSTANCE == null)
+                    INSTANCE = new MusicRemoteDataSource(context);
+            }
         }
         return INSTANCE;
     }
